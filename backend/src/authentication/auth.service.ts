@@ -7,6 +7,7 @@ import * as argon from 'argon2';
 @Injectable({})
 export class authService {
     constructor(private prism: prismaService){};
+    
     async login(req: dataForm){
         console.log(req.password);
         const hash = await argon.hash(req.password);
@@ -25,6 +26,19 @@ export class authService {
         console.log(hash);
         return data;
     }
+
+    
+    // async fetchData() {
+    //     try {
+    //     const response = await axios.get('https://your-api-url.com/data');
+    //     return response.data;
+    //     } catch (error) {
+    //     // Handle error
+    //     console.error(error);
+    //     throw error;
+    //     }
+    // }
+      
 
     async singin(req: dataForm){
         const user = await this.prism.user.findFirst({
