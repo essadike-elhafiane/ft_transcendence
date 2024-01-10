@@ -13,7 +13,7 @@ export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
             clientSecret: process.env.INTRA_CLIENT_SECRET,
             callbackURL: process.env.INTRA_URL,
             // redirect_uri: process.env.INTRA_URL,
-            scopes: ['Profile', 'email'],
+            scopes:["public"]
         })
     }
     async validate(accessToken: string, refreshToken: string): Promise<any> {
@@ -23,11 +23,19 @@ export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
         });
         const profile = profileResponse.data;
 
+        const fs = require('fs');
         // Log user data
-        
-        console.log(profile); // User profile data
+        const outputFilePath = 'user_profile11.json'; // Specify the file path
+        fs.writeFileSync(outputFilePath, JSON.stringify(profile, null, 2));
+
         console.log(accessToken); // Access Token
         console.log(refreshToken);
+        console.log(profile.email);
+        console.log(profile);
+        console.log(profile.image);
+        // console.log(profile);
+
+        // User profile data
         // done(null, user);
     }
 }
