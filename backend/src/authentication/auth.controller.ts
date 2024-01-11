@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { authService } from "./auth.service";
 import { dataForm } from "./dto/form";
 import { GoogleAuthGuard } from "./googleStategy/googleGuards";
-import { IntraGuard } from "./intraStrategy/intraGuard";
+// import { IntraGuard } from "./intraStrategy/intraGuard";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller()
 
@@ -15,12 +16,19 @@ export class authController{
     }
     
     @Get('api/auth/google')
-    @UseGuards(GoogleAuthGuard)
-    fetchData(){
-        // this.GoogleStr.checkValidite();
-        return 'sdgsdgsdgsdgsdgsdg';
+    @UseGuards(AuthGuard("google"))
+    googlesingup(@Req() req: Request){
+        console.log(req);
+        return this.authS.googlesingup();
     }
     
+    @Get('google/singin')
+    @UseGuards(GoogleAuthGuard)
+    googlesingin(){
+        return this.authS.googlesingin();
+    }
+
+
     @Get('google/login')
     @UseGuards(GoogleAuthGuard)
     googleLogin(){
@@ -28,8 +36,9 @@ export class authController{
     }
 
     @Get('api/auth/intra')
-    @UseGuards(IntraGuard)
-    intraLogin(){
+    @UseGuards(AuthGuard('intra'))
+    intraLogin(@Req() req: Request){
+        console.log(req);
         return 123;
     }
 

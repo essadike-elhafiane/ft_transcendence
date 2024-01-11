@@ -17,7 +17,7 @@ model User{
   userName String @unique
   email String @unique
   hash String
-
+  image String?
   firstName String?
   lastName String?
 

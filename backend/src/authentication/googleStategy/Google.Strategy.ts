@@ -16,5 +16,6 @@ export class GoogleStregy extends PassportStrategy(Strategy){
         console.log(accessToken);
         console.log(refreshToken);
         console.log(profile.emails);
+        return profile;
     }
 }

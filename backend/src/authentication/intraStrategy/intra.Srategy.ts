@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-oauth2";
 import axios from 'axios';
+import { Profile } from "passport";
 
 @Injectable()
 export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
@@ -16,25 +17,26 @@ export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
             scopes:["public"]
         })
     }
-    async validate(accessToken: string, refreshToken: string): Promise<any> {
+    async validate(accessToken: string, refreshToken: string, profile: Profile, done: Function): Promise<any> {
         // Fetch user profile from 42 Intra API
-        const profileResponse = await axios.get('https://api.intra.42.fr/v2/me', {
-            headers: { Authorization: `Bearer ${accessToken}` }
-        });
-        const profile = profileResponse.data;
+        // const profileResponse = await axios.get('https://api.intra.42.fr/v2/me', {
+        //     headers: { Authorization: `Bearer ${accessToken}` }
+        // });
+        // const profile = profileResponse.data;
 
-        const fs = require('fs');
-        // Log user data
-        const outputFilePath = 'user_profile11.json'; // Specify the file path
-        fs.writeFileSync(outputFilePath, JSON.stringify(profile, null, 2));
+        // const fs = require('fs');
+        // // Log user data
+        // const outputFilePath = 'user_profile11.json'; // Specify the file path
+        // fs.writeFileSync(outputFilePath, JSON.stringify(profile, null, 2));
 
-        console.log(accessToken); // Access Token
-        console.log(refreshToken);
-        console.log(profile.email);
+        // console.log(accessToken);     // Access Token
+        // console.log(refreshToken);
+        // console.log(profile.email);
+        // console.log(profile.image);
         console.log(profile);
-        console.log(profile.image);
-        // console.log(profile);
+        // console.log(profile.first_name, " ", profile.last_name );
 
+        return done(null, profile);
         // User profile data
         // done(null, user);
     }
