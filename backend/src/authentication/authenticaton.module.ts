@@ -5,11 +5,16 @@ import { PrismaModule } from "src/prisma/prisma.module";
 import { GoogleStregy } from "./googleStategy/Google.Strategy";
 import { IntraStrategy } from "./intraStrategy/intra.Srategy";
 import { JwtModule } from "@nestjs/jwt";
+import { JwtStrategy } from "./jwtStrategy/jwtStrategy";
+
 
 @Module({
     //you can use @Global in prismaModule for minimuse this type in all module 
-    imports: [PrismaModule, JwtModule.register({})],
+    imports: [PrismaModule, JwtModule.register({
+        secret: 'essadike', // Secure secret
+        signOptions: { expiresIn: '1h' },
+      }),],
     controllers: [authController],
-    providers: [authService, GoogleStregy, IntraStrategy]
+    providers: [authService, GoogleStregy, IntraStrategy, JwtStrategy]
 })
 export class AuthMod{}

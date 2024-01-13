@@ -1,9 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { authService } from "./auth.service";
+import { Request, Response } from 'express';
 import { dataForm } from "./dto/form";
 import { GoogleAuthGuard } from "./googleStategy/googleGuards";
 // import { IntraGuard } from "./intraStrategy/intraGuard";
 import { AuthGuard } from "@nestjs/passport";
+import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
+
 
 @Controller()
 
@@ -17,14 +20,19 @@ export class authController{
     
     @Get('api/auth/google')
     @UseGuards(AuthGuard("google"))
-    googlesingup(@Req() req: Request){
-        console.log(req);
-        return this.authS.googlesingup();
+    googlesingup(@Req() req: Request, @Res() response: Response){
+        // console.log(req.json);
+        // const jwt: string = req.;
+        response.cookie('jwt', req.user['jwt']);
+        console.log(req.user);
+        response.send(req.user);
+        // return this.authS.googlesingup();
     }
     
     @Get('google/singin')
     @UseGuards(GoogleAuthGuard)
-    googlesingin(){
+    googlesingin(@Req() request: Request){
+       
         return this.authS.googlesingin();
     }
 
@@ -37,12 +45,31 @@ export class authController{
 
     @Get('api/auth/intra')
     @UseGuards(AuthGuard('intra'))
-    intraLogin(@Req() req: Request){
-        console.log(req);
-        return 123;
+    intraLogin(@Req() request: Request){
+        // return this.authS.token();
+        console.log(request);
+        // res.redirect('/home');
+        return request.user;
     }
 
-    
+    @Get('status')
+    @UseGuards(JwtAuthGuard)
+    user(@Req() request: Request) {
+      console.log(request.user);
+      if (request.user) {
+        return { msg: 'Authenticated' };
+      } else {
+        return { msg: 'Not Authenticated' };
+      }
+    }
+
+    @Get('/home')
+    // @UseGuards(GoogleAuthGuard)
+    home(){
+        
+        return 'hello';
+    }
+
     @Post('hello')
     hello(@Body() req: dataForm) {  
         return this.authS.singin(req);
@@ -50,21 +77,3 @@ export class authController{
     
 }
 
-
-
-
-
-
-// authS: authService;
-// constructor(authSerice: authService){
-//     this.authS = authSerice;
-// }
-//this ^ expression it is similar to this 
-// @Post('login')
-// login(@Req() req: Request){
-//     console.log(req.headers);
-//     console.log(req.body);
-//     console.log(req.json);
-//     console.log(req.text);
-//     return 'hello sgdsfgds';
-// }  

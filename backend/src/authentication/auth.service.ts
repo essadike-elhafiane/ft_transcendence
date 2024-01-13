@@ -3,12 +3,11 @@ import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/prisma/prisma.service";
 import { dataForm } from "./dto/form";
 import * as argon from 'argon2';
-import { JwtService } from "@nestjs/jwt";
-import { promises } from "dns";
+// import { JwtService } from "@nestjs/jwt";
 
 @Injectable({})
 export class authService {
-    constructor(private prism: prismaService, private jwt: JwtService){};
+    constructor(private prism: prismaService,){};
     
     async login(req: dataForm){
         console.log(req.password);
@@ -30,21 +29,62 @@ export class authService {
     }
 
 
-    async token(userID: number, email: string) : Promise<string>{
-        const paylod = {
-            sub : userID,
-            email,
-        };
+    // async token(userID: number, email: string) : Promise<string>{
+    //     const paylod = {
+    //         sub : userID,
+    //         email,
+    //     };
 
-        const secrett = process.env.GOOGLE_CLIENT_SECRET;
+    //     const secrett = process.env.GOOGLE_CLIENT_SECRET;
 
-        return this.jwt.signAsync( paylod, {
-            expiresIn: '15m',
-            secret: secrett,
-        });
+    //     // return this.jwt.signAsync( paylod, {
+    //     //     expiresIn: '15m',
+    //     //     secret: secrett,
+    //     // });
+    // }
+    
+    async findUser(id :number)
+    {
+        const user = await this.prism.user.findFirst({
+            where: {
+                id
+            }
+        })
+        return user ;
     }
 
+    async ValideteUser(email: string, userName: string)
+    {
+        const user = await this.prism.user.findUnique({
+            where:{
+                email
+            }
+        });
+        // console.log('user', user);
+        if (user)
+            return user;
+
+        else{
+            const hash = await argon.hash('req.password');
+            const data = await this.prism.user.create({
+                data:{
+                    email  : email,
+                    hash : hash,
+                    userName : userName,
+                },
+                // select:{
+                //     email: true,
+                //     userName: true,
+                //     createdAt: true,
+                // }
+            })
+            return data;
+        }
+    }
+
+
     async  googlesingup() {
+
         return 'hello i\'m signin with google'
     };
 
