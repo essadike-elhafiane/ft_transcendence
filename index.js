@@ -15,8 +15,11 @@ async function fonc() {
             credentials: 'include',
             // withCredentials: true,
         });
+        let div = document.getElementById('dd');
         if (response.ok)
-            document.getElementById('dd').style.display = 'block';
+            div.style.display = 'block';
+        else 
+            div.style.display = 'none';
         if (response.ok) {
             const data = await response.json();
             console.log('dsgsdgsdgsdg---------',data);
@@ -32,16 +35,63 @@ async function fonc() {
     }
 }
 
-function getCookie(name) {
-    
-    const cookies = document.cookie.split('; ');
-    console.log(cookies);
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].split('=');
-      if (cookie[0] === name) {
-        return cookie[1];
-      }
+async function logout() {
+    try {
+        const response = await fetch('http://localhost:3000/logout', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
+        if (response.ok) {
+            let div = document.getElementById('dd');
+            div.style.display = 'none';
+            const data = await response.json();
+            console.log(data);
+            window.location.href = '/';
+        } else {
+            throw new Error('Error: ' + response.status);
+        }
+    } catch (error) {
+        console.error(error);
     }
-    return '';
-  }
-// fonc()
+}
+
+
+
+function authenticationgoogle(){
+    window.location.href = 'http://localhost:3000/api/auth/google';
+}
+
+function authenticationintra(){
+    window.location.href = 'http://localhost:3000/api/auth/intra';
+}
+
+
+
+// async function login() {
+//     try {
+//         const response = await fetch('http://localhost:3000/login', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             credentials: 'include',
+//             body: JSON.stringify({
+//                 email: document.getElementById('email').value,
+//                 password: document.getElementById('password').value,
+//             }),
+//         });
+//         if (response.ok) {
+//             const data = await response.json();
+//             console.log(data);
+//             window.location.href = '/profile';
+//         } else {
+//             throw new Error('Error: ' + response.status);
+//         }
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
+

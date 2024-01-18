@@ -24,8 +24,9 @@ export class authController{
         // console.log(req.json);
         // const jwt: string = req.;
         response.cookie('jwt', req.user['jwt'],);
-        console.log(req.user);
-        response.send(req.user);
+        // console.log(req.user);
+        // response.send(req.user);
+        response.redirect('http://localhost:5500');
         // return this.authS.googlesingup();
     }
     
@@ -47,7 +48,8 @@ export class authController{
     @UseGuards(AuthGuard('intra'))
     intraLogin(@Req() request: Request, @Res() response: Response){
         // res.redirect('/home');
-        response.cookie('jwt', request.user,).send('sdgsg');
+        response.cookie('jwt', request.user,);
+        response.redirect('http://localhost:5500');
         // return request.user;
     }
 
