@@ -3,11 +3,13 @@ import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-oauth2";
 import axios from 'axios';
+import { authService } from "../auth.service";
+import { generateJwtToken } from "../jwtStrategy/jwtToken";
 
 @Injectable()
 export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
     // ... existing constructor ...
-    constructor(){
+    constructor(private AuthS: authService){
         super({
             authorizationURL: 'https://api.intra.42.fr/oauth/authorize', // 42's authorization endpoint
             tokenURL: 'https://api.intra.42.fr/oauth/token',
@@ -34,12 +36,14 @@ export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
         const profile2 = profileResponse.data;
-
-        const fs = require('fs');
-        // // Log user data
-        const outputFilePath = 'user_profile11.json'; // Specify the file path
-        fs.writeFileSync(outputFilePath, JSON.stringify(profile2, null, 2));
-        return done(null, profile);
+        console.log(profile2.email, profile2.login, profile2.image.link);
+        const user = await this.AuthS.ValideteUser(profile2.email, profile2.login, profile2.image.link);
+        const token: string = generateJwtToken(user);
+        // const fs = require('fs');
+        // // // Log user data
+        // const outputFilePath = 'user_profile11.json'; // Specify the file path
+        // fs.writeFileSync(outputFilePath, JSON.stringify(profile2, null, 2));
+        return done(null, token);
         // try {
         //     let profileResponse = await axios.get('https://api.intra.42.fr/v2/me', {
         //         headers: { Authorization: `Bearer ${accessToken}` }

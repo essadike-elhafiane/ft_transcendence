@@ -23,7 +23,7 @@ export class authController{
     googlesingup(@Req() req: Request, @Res() response: Response){
         // console.log(req.json);
         // const jwt: string = req.;
-        response.cookie('jwt', req.user['jwt']);
+        response.cookie('jwt', req.user['jwt'],);
         console.log(req.user);
         response.send(req.user);
         // return this.authS.googlesingup();
@@ -45,26 +45,24 @@ export class authController{
 
     @Get('api/auth/intra')
     @UseGuards(AuthGuard('intra'))
-    intraLogin(@Req() request: Request){
-        // return this.authS.token();
-        console.log(request);
+    intraLogin(@Req() request: Request, @Res() response: Response){
         // res.redirect('/home');
-        return request.user;
+        response.cookie('jwt', request.user,).send('sdgsg');
+        // return request.user;
     }
 
     @Get('status')
     @UseGuards(JwtAuthGuard)
     user(@Req() request: Request) {
-      console.log(request.user);
-      if (request.user) {
-        return { msg: 'Authenticated' };
-      } else {
-        return { msg: 'Not Authenticated' };
-      }
+        console.log(request);
+    console.log(request.user['userId']);
+        
+    //   return request.user;
+    return this.authS.findUser(request.user['userId'])
     }
-
-    @Get('/home')
-    // @UseGuards(GoogleAuthGuard)
+   
+    @Get('logout')
+    @UseGuards(JwtAuthGuard)
     home(){
         
         return 'hello';

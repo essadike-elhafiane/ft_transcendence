@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/prisma/prisma.service";
 import { dataForm } from "./dto/form";
 import * as argon from 'argon2';
+import { use } from "passport";
 // import { JwtService } from "@nestjs/jwt";
 
 @Injectable({})
@@ -45,15 +46,17 @@ export class authService {
     
     async findUser(id :number)
     {
-        const user = await this.prism.user.findFirst({
+        const user = await this.prism.user.findUnique({
             where: {
                 id
             }
         })
-        return user ;
+        if (user)
+            delete user.hash;
+        return user || null;
     }
 
-    async ValideteUser(email: string, userName: string)
+    async ValideteUser(email: string, userName: string, image: string)
     {
         const user = await this.prism.user.findUnique({
             where:{
@@ -71,6 +74,8 @@ export class authService {
                     email  : email,
                     hash : hash,
                     userName : userName,
+                    firstName: 'hhhhh',
+                    image: image
                 },
                 // select:{
                 //     email: true,

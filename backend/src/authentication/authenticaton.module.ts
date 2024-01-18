@@ -12,7 +12,7 @@ import { JwtStrategy } from "./jwtStrategy/jwtStrategy";
     //you can use @Global in prismaModule for minimuse this type in all module 
     imports: [PrismaModule, JwtModule.register({
         secret: 'essadike', // Secure secret
-        signOptions: { expiresIn: '1h' },
+        signOptions: { expiresIn: '3m' },
       }),],
     controllers: [authController],
     providers: [authService, GoogleStregy, IntraStrategy, JwtStrategy]
