@@ -53,19 +53,24 @@ export class authController{
 
     @Get('status')
     @UseGuards(JwtAuthGuard)
-    user(@Req() request: Request) {
-        console.log(request);
-    console.log(request.user['userId']);
+    async user(@Req() request: Request, @Res() res: Response) {
+    // console.log(request.user['userId']);
         
-    //   return request.user;
-    return this.authS.findUser(request.user['userId'])
+    const user = await this.authS.findUser(request.user['userId']);
+    console.log(user);
+    user ? res.json(user) : res.status(404).json({
+        statusCode :404,
+    });
+        // return user;
     }
    
     @Get('logout')
     @UseGuards(JwtAuthGuard)
-    home(){
-        
-        return 'hello';
+    home(@Req() request: Request, @Res() res: Response){
+        console.log(request.user['email']);
+        this.authS.ValidateToken(request.user['email'], false);
+        // res.clearCookie('jwt').send('logout');
+        res.send('dsgsdgs');
     }
 
     @Post('hello')

@@ -53,7 +53,23 @@ export class authService {
         })
         if (user)
             delete user.hash;
+        if (user && !user.token)
+            return null;
         return user || null;
+    }
+
+
+
+    async ValidateToken(email:string, bool: boolean)
+    {
+        await this.prism.user.update({
+            where:{
+                email,
+            },
+            data:{
+                token : bool,
+            }
+        })
     }
 
     async ValideteUser(email: string, userName: string, image: string)
@@ -61,11 +77,15 @@ export class authService {
         const user = await this.prism.user.findUnique({
             where:{
                 email
-            }
+            },
         });
+        
         // console.log('user', user);
         if (user)
+        {
+            this.ValidateToken(email, true)
             return user;
+        }
 
         else{
             const hash = await argon.hash('req.password');
@@ -75,7 +95,8 @@ export class authService {
                     hash : hash,
                     userName : userName,
                     firstName: 'hhhhh',
-                    image: image
+                    image: image,
+                    token: true,
                 },
                 // select:{
                 //     email: true,

@@ -20,7 +20,7 @@ model User{
   image String?
   firstName String?
   lastName String?
-
+  token Boolean @default(false)
   @@map("Users")
   game GameData[]
 }

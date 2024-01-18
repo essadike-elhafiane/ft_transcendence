@@ -15,10 +15,11 @@ async function fonc() {
             credentials: 'include',
             // withCredentials: true,
         });
-
+        if (response.ok)
+            document.getElementById('dd').style.display = 'block';
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
+            console.log('dsgsdgsdgsdg---------',data);
             document.getElementById('img').setAttribute('src', data.image);
             document.getElementById('name').innerText = 'Username: ' + data.userName;
             document.getElementById('email').innerText = 'Email: ' + data.email;
