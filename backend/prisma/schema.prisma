@@ -10,28 +10,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) 
-  updateAt DateTime @updatedAt
-  userName String @unique
-  email String @unique
-  hash String
-  image String?
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userName  String    @unique
+  email     String    @unique
+  hash      String
+  image     String?
   firstName String?
-  lastName String?
-  token Boolean @default(false)
+  lastName  String?
+  token     Boolean   @default(false)
+  game      GameData[]
+  
   @@map("Users")
-  game GameData[]
 }
 
-model GameData{
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) 
-  updateAt DateTime @updatedAt
-  userId Int
-
-  user User @relation(fields: [userId], references: [id])
+model GameData {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  gameName  String?
+  users     User[] 
+  
   @@map("GameDatas")
 }
+
+// model Game {
+//   id         Int       @id @default(autoincrement())
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+//   gameName   String
+//   gameDataId Int
+//   gameData   GameData  @relation(fields: [gameDataId], references: [id])
+  
+//   @@map("Games")
+// }
 

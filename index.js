@@ -33,6 +33,7 @@ async function fonc() {
     } catch (error) {
         console.error(error);
     }
+  
 }
 
 async function logout() {
@@ -44,12 +45,50 @@ async function logout() {
             },
             credentials: 'include',
         });
+        
         if (response.ok) {
             let div = document.getElementById('dd');
             div.style.display = 'none';
             const data = await response.json();
             console.log(data);
-            window.location.href = '/';
+            document.querySelector('h3').innerText = data.logout;
+            // window.location.href = '/';
+        } else {
+            throw new Error('Error: ' + response.status);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+fonc();
+
+function authenticationgoogle(){
+    window.location.href = 'http://localhost:3000/api/auth/google';
+    // alert('login google');
+}
+
+function authenticationintra(){
+    window.location.href = 'http://localhost:3000/api/auth/intra';
+    // alert('login intra');
+    // fonc()
+}
+async function ggame() {
+    try {
+        const response = await fetch('http://localhost:3000/generategame', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            document.getElementById('hhh').innerText ='gameId : ' + data.id;
+            let div = document.getElementById('dd');
+            div.style.display = 'none';
         } else {
             throw new Error('Error: ' + response.status);
         }
@@ -59,16 +98,41 @@ async function logout() {
 }
 
 
-
-function authenticationgoogle(){
-    window.location.href = 'http://localhost:3000/api/auth/google';
+function jg(){
+    document.getElementById('jgame').style.display = 'block';
+    let div = document.getElementById('dd');
+    div.style.display = 'none';
 }
+async function jgame(){
 
-function authenticationintra(){
-    window.location.href = 'http://localhost:3000/api/auth/intra';
+    const value = document.getElementById('input').value;
+    console.log(value);
+    if (!Number.isInteger(Number(value)))
+       return document.getElementById('input').style.border = '1px solid red';
+    else
+        document.getElementById('input').style.border = '1px solid black';
+
+    try {
+        const response = await fetch(`http://localhost:3000/joingame?gameid=${encodeURIComponent(value)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            document.getElementById('hhh').innerText = JSON.stringify(data);
+            
+        } else {
+            throw new Error('Error: ' + response.status);
+        }
+    }catch (error) {
+        console.error(error);
+    }
 }
-
-
 
 // async function login() {
 //     try {

@@ -21,13 +21,7 @@ export class authController{
     @Get('api/auth/google')
     @UseGuards(AuthGuard("google"))
     googlesingup(@Req() req: Request, @Res() response: Response){
-        // console.log(req.json);
-        // const jwt: string = req.;
-        response.cookie('jwt', req.user['jwt'],);
-        // console.log(req.user);
-        // response.send(req.user);
-        response.redirect('http://localhost:5500');
-        // return this.authS.googlesingup();
+        response.cookie('jwt', req.user['jwt'],).redirect('http://localhost:5500');
     }
     
     @Get('google/singin')
@@ -47,23 +41,17 @@ export class authController{
     @Get('api/auth/intra')
     @UseGuards(AuthGuard('intra'))
     intraLogin(@Req() request: Request, @Res() response: Response){
-        // res.redirect('/home');
-        response.cookie('jwt', request.user,);
-        response.redirect('http://localhost:5500');
-        // return request.user;
+        response.cookie('jwt', request.user,).redirect('http://localhost:5500');
     }
 
     @Get('status')
     @UseGuards(JwtAuthGuard)
     async user(@Req() request: Request, @Res() res: Response) {
-    // console.log(request.user['userId']);
-        
-    const user = await this.authS.findUser(request.user['userId']);
-    console.log(user);
-    user ? res.json(user) : res.status(404).json({
-        statusCode :404,
-    });
-        // return user;
+        const user = await this.authS.findUser(request.user['userId']);
+        console.log(user);
+        user ? res.json(user) : res.status(404).json({
+            statusCode :404,
+        });
     }
    
     @Get('logout')
@@ -71,8 +59,7 @@ export class authController{
     home(@Req() request: Request, @Res() res: Response){
         console.log(request.user['email']);
         this.authS.ValidateToken(request.user['email'], false);
-        // res.clearCookie('jwt').send('logout');
-        res.send('dsgsdgs');
+        res.clearCookie('jwt').send({'logout': 'logout success !'});
     }
 
     @Post('hello')
@@ -80,5 +67,20 @@ export class authController{
         return this.authS.singin(req);
     }
     
+
+    @Get('generategame')
+    @UseGuards(JwtAuthGuard)
+    async createGame(@Req() request: Request){
+        console.log(request.user['userId']);
+        return await this.authS.generateGame(request.user['userId'], 'gameName');
+    }
+
+    @Get('joingame')
+    @UseGuards(JwtAuthGuard)
+    async joinGame(@Req() request: Request){
+        console.log(request.query.gameid);
+        const id: number = parseInt(request.query.gameid as string, 10);
+        return await this.authS.joinGame(id ,request.user['userId']);
+    }
 }
 

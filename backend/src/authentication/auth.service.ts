@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 // import { User, GameData } from "@prisma/client";
 import { prismaService } from "src/prisma/prisma.service";
-import { dataForm } from "./dto/form";
+import { dataForm, gameData } from "./dto/form";
 import * as argon from 'argon2';
 import { use } from "passport";
 // import { JwtService } from "@nestjs/jwt";
@@ -29,6 +29,50 @@ export class authService {
         return data;
     }
 
+    async generateGame(UserId: number, name: string){
+
+        const game = await this.prism.gameData.create({
+            data:{
+                gameName: name,
+                users:{
+                    connect:{
+                        id: UserId,
+                    }
+                }
+            },
+            select:{
+                    id: true,
+            }
+        })
+        return game;
+    }
+
+    async joinGame(gameId: number, UserId: number){
+
+        const data = await this.prism.gameData.update({
+            where:{
+                id: gameId,
+            },
+            data:{
+                users:{
+                    connect:{
+                        id: UserId,
+                    }
+                }
+            },
+            select:{
+                id: true,
+                users:{
+                    select:{
+                        id: true,
+                        userName: true,
+                    }
+                }
+            }
+        }) 
+        console.log(data);
+        return data;
+    }
 
     // async token(userID: number, email: string) : Promise<string>{
     //     const paylod = {
@@ -51,6 +95,13 @@ export class authService {
                 id
             }
         })
+        // const data = await this.prism.gameData.findMany({
+        //     where:{
+        //         // userId: id,
+        //     }
+        // })
+
+        // console.log(data);
         if (user)
             delete user.hash;
         if (user && !user.token)
