@@ -17,7 +17,25 @@
             display: none;
 
         }
-        
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            75% {
+                transform: translateX(5px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .animated-input {
+            animation: shake 0.5s ease-in-out 0s 1;
+        }
+
         div img {
             width: 160px;
             height: 160px;

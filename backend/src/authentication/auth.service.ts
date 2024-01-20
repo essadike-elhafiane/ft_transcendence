@@ -29,64 +29,7 @@ export class authService {
         return data;
     }
 
-    async generateGame(UserId: number, name: string){
-
-        const game = await this.prism.gameData.create({
-            data:{
-                gameName: name,
-                users:{
-                    connect:{
-                        id: UserId,
-                    }
-                }
-            },
-            select:{
-                    id: true,
-            }
-        })
-        return game;
-    }
-
-    async joinGame(gameId: number, UserId: number){
-
-        const data = await this.prism.gameData.update({
-            where:{
-                id: gameId,
-            },
-            data:{
-                users:{
-                    connect:{
-                        id: UserId,
-                    }
-                }
-            },
-            select:{
-                id: true,
-                users:{
-                    select:{
-                        id: true,
-                        userName: true,
-                    }
-                }
-            }
-        }) 
-        console.log(data);
-        return data;
-    }
-
-    // async token(userID: number, email: string) : Promise<string>{
-    //     const paylod = {
-    //         sub : userID,
-    //         email,
-    //     };
-
-    //     const secrett = process.env.GOOGLE_CLIENT_SECRET;
-
-    //     // return this.jwt.signAsync( paylod, {
-    //     //     expiresIn: '15m',
-    //     //     secret: secrett,
-    //     // });
-    // }
+    
     
     async findUser(id :number)
     {
@@ -95,13 +38,6 @@ export class authService {
                 id
             }
         })
-        // const data = await this.prism.gameData.findMany({
-        //     where:{
-        //         // userId: id,
-        //     }
-        // })
-
-        // console.log(data);
         if (user)
             delete user.hash;
         if (user && !user.token)
@@ -130,8 +66,6 @@ export class authService {
                 email
             },
         });
-        
-        // console.log('user', user);
         if (user)
         {
             this.ValidateToken(email, true)
@@ -149,11 +83,6 @@ export class authService {
                     image: image,
                     token: true,
                 },
-                // select:{
-                //     email: true,
-                //     userName: true,
-                //     createdAt: true,
-                // }
             })
             return data;
         }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthMod } from './authentication/authenticaton.module';
 import { UserModule } from './user/user.module';
-import { GameDataModule } from './game-data/game-data.module';
+import { GameDataModule } from './game/game.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';

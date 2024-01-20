@@ -9,7 +9,6 @@ import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
 
 
 @Controller()
-
 export class authController{
     constructor (private authS: authService){}
     @Post('login')
@@ -68,19 +67,6 @@ export class authController{
     }
     
 
-    @Get('generategame')
-    @UseGuards(JwtAuthGuard)
-    async createGame(@Req() request: Request){
-        console.log(request.user['userId']);
-        return await this.authS.generateGame(request.user['userId'], 'gameName');
-    }
-
-    @Get('joingame')
-    @UseGuards(JwtAuthGuard)
-    async joinGame(@Req() request: Request){
-        console.log(request.query.gameid);
-        const id: number = parseInt(request.query.gameid as string, 10);
-        return await this.authS.joinGame(id ,request.user['userId']);
-    }
+   
 }
 

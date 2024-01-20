@@ -100,6 +100,7 @@ async function ggame() {
 
 function jg(){
     document.getElementById('jgame').style.display = 'block';
+   
     let div = document.getElementById('dd');
     div.style.display = 'none';
 }
@@ -107,10 +108,18 @@ async function jgame(){
 
     const value = document.getElementById('input').value;
     console.log(value);
+    document.getElementById('input').classList.remove('animated-input');
     if (!Number.isInteger(Number(value)))
-       return document.getElementById('input').style.border = '1px solid red';
+    {
+        document.getElementById('input').style.border = '1px solid red';
+        document.getElementById('input').classList.add('animated-input');;
+        return;
+    }
     else
+    {
+        
         document.getElementById('input').style.border = '1px solid black';
+    }
 
     try {
         const response = await fetch(`http://localhost:3000/joingame?gameid=${encodeURIComponent(value)}`, {
