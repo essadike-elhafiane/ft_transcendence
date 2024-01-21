@@ -22,9 +22,36 @@ model User {
   lastName  String?
   token     Boolean   @default(false)
   game      GameData[]
-  
+  online    Boolean   @default(false)
+  sentRequests   FriendRequest[] @relation("Sender")
+  // frendship       Friendship[] @relation("Friendship")
+  friendRequests    FriendRequest[] @relation("Receiver")
   @@map("Users")
 }
+
+// model Friendship {
+//   id        Int       @id @default(autoincrement())
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   senderId  Int
+//   receiverId Int
+//   // sender    User      @relation("Sender", fields: [senderId], references: [id])
+//   // receiver  User      @relation("Receiver", fields: [receiverId], references: [id])
+//   @@map("Friendships")
+// }
+
+
+model FriendRequest {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  senderId  Int 
+  receiverId Int
+  sender    User      @relation("Sender", fields: [senderId], references: [id])
+  receiver  User      @relation("Receiver", fields: [receiverId], references: [id])
+  @@map("FriendRequests")
+}
+
 
 model GameData {
   id        Int       @id @default(autoincrement())
@@ -32,7 +59,7 @@ model GameData {
   updatedAt DateTime  @updatedAt
   gameName  String?
   users     User[] 
-  
+  // whatchingUser User[] @relation("WatchingUser")
   @@map("GameDatas")
 }
 

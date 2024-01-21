@@ -65,8 +65,5 @@ export class authController{
     hello(@Body() req: dataForm) {  
         return this.authS.singin(req);
     }
-    
-
-   
 }
 

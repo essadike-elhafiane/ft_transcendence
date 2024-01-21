@@ -73,6 +73,7 @@ function authenticationintra(){
     // alert('login intra');
     // fonc()
 }
+
 async function ggame() {
     try {
         const response = await fetch('http://localhost:3000/generategame', {
@@ -143,6 +144,85 @@ async function jgame(){
     }
 }
 
+function sendRequest() {
+
+    const value = document.getElementById('input').value;
+    console.log(value);
+    document.getElementById('input').classList.remove('animated-input');
+    if (!Number.isInteger(Number(value)))
+    {
+        document.getElementById('input').style.border = '1px solid red';
+        document.getElementById('input').classList.add('animated-input');;
+        return;
+    }
+    else
+    {
+        
+        document.getElementById('input').style.border = '1px solid black';
+    }
+    const requestUrl = 'http://localhost:3000/user/sendrequest';
+    const requestData = { id: value };
+  
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestData),
+      credentials: 'include',
+    };
+  
+    fetch(requestUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response:', data);
+        // Handle the response data
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle the error
+      });
+  }
+
+
+  function request() {
+
+    const requestUrl = 'http://localhost:3000/user/get';
+  
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(requestData),
+      credentials: 'include',
+    };
+  
+    fetch(requestUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response:', data);
+        const container = document.getElementById('container');
+        container.innerHTML = "";
+        
+        data.forEach(user => {
+        const imageElement = document.createElement('img');
+        imageElement.src = user.image;
+
+        const nameElement = document.createElement('p');
+        nameElement.textContent = user.userName;
+
+        const userContainer = document.createElement('div');
+        userContainer.appendChild(imageElement);
+        userContainer.appendChild(nameElement);
+
+        container.appendChild(userContainer);
+        });
+        // Handle the response data
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle the error
+      });
+  }
+
+//   sendRequest(1);
 // async function login() {
 //     try {
 //         const response = await fetch('http://localhost:3000/login', {
