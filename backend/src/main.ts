@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as session from 'express-session'
 import * as passport from 'passport'
 import * as cookieParser from 'cookie-parser';
+import { WsAdapter } from '@nestjs/platform-ws';
 async function server() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
@@ -25,7 +26,7 @@ async function server() {
     origin: 'http://localhost:5500',
     credentials: true,
   })
-  
+  // app.useWebSocketAdapter(new WsAdapter(app));
 
   app.use(passport.initialize());
   app.use(passport.session());

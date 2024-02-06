@@ -24,31 +24,47 @@ model User {
   game      GameData[]
   online    Boolean   @default(false)
   sentRequests   FriendRequest[] @relation("Sender")
-  // frendship       Friendship[] @relation("Friendship")
   friendRequests    FriendRequest[] @relation("Receiver")
+  friends         Friends[]       @relation("Friends", references: [id])
+  // friendOf        User[]          @relation("", references: [id])
   @@map("Users")
 }
 
-// model Friendship {
+model Friends {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User?      @relation("Friends", fields: [userId], references: [id])
+  userId    Int?
+  friend    User?     @relation("Friends", fields: [friendId], references: [id])
+  friendId  Int?
+  @@unique([userId, friendId ])
+  @@map("Friends")
+}
+
+// model Message {
 //   id        Int       @id @default(autoincrement())
 //   createdAt DateTime  @default(now())
 //   updatedAt DateTime  @updatedAt
-//   senderId  Int
-//   receiverId Int
-//   // sender    User      @relation("Sender", fields: [senderId], references: [id])
-//   // receiver  User      @relation("Receiver", fields: [receiverId], references: [id])
-//   @@map("Friendships")
+//   content   String
+//   sender    User?      @relation("Sender", fields: [senderId], references: [id])
+//   senderId  Int?
+//   receiver  User?     @relation("Receiver", fields: [receiverId], references: [id])
+//   receiverId Int?
+//   @@map("Messages")
 // }
-
 
 model FriendRequest {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  senderId  Int 
-  receiverId Int
-  sender    User      @relation("Sender", fields: [senderId], references: [id])
-  receiver  User      @relation("Receiver", fields: [receiverId], references: [id])
+  sender    User?      @relation("Sender", fields: [senderId], references: [id])
+  senderId  Int?
+  receiver  User?     @relation("Receiver", fields: [receiverId], references: [id])
+  receiverId Int?
+  accepted Boolean @default(false)
+  blocked  Boolean @default(false)
+  @@unique([senderId, receiverId ])
   @@map("FriendRequests")
 }
 
@@ -58,7 +74,7 @@ model GameData {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   gameName  String?
-  users     User[] 
+  users     User[]
   // whatchingUser User[] @relation("WatchingUser")
   @@map("GameDatas")
 }

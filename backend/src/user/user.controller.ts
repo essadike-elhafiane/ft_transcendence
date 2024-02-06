@@ -20,4 +20,11 @@ export class UserController {
     getFriendRequest(@Req() req : Request){
        return this.Userservice.FriendRequest(req.user['userId'])
     }
+
+    @Post('/accept/:id')
+    @UseGuards(JwtAuthGuard)
+    acceptFriendRequest(@Req() req : Request){
+        return this.Userservice.acceptFriendRequest(req.user['userId'], parseInt(req.params.id))
+    }
+
 }

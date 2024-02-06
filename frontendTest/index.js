@@ -1,6 +1,7 @@
 const url = 'http://localhost:3000/status'; // Replace with your API endpoint URL
 // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiY3JlYXRlZEF0IjoiMjAyNC0wMS0xN1QyMDowNDoyNy44NjZaIiwidXBkYXRlQXQiOiIyMDI0LTAxLTE3VDIwOjA0OjI3Ljg2NloiLCJ1c2VyTmFtZSI6ImVzc2FkaWtlIGVsaGFmaWFuZSIsImVtYWlsIjoiZXNzYWRpa2VlbGhhZmlhbmVAZ21haWwuY29tIiwiaGFzaCI6IiRhcmdvbjJpZCR2PTE5JG09NjU1MzYsdD0zLHA9NCQrSHIrUXpuUHlwcU1qTFlPL0NzeHpBJEFpZXBlVzFrVWZ3RmxWcE9sNU1iMVVGSnhpNEgyWDlUZmQ3QUE5VmhhbDQiLCJpbWFnZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0l3ODV6SVBuMnJhSTM0RlZlYVVpS210WmI1cWkzaml5eUlMS2ZKVFFUNz1zOTYtYyIsImZpcnN0TmFtZSI6ImhoaGhoIiwibGFzdE5hbWUiOm51bGwsImlhdCI6MTcwNTUyMjk1NywiZXhwIjoxNzA1NjA5MzU3fQ.Dwv2zVuyYIVHGyWrwGMNX2BxebrOml5DXE3T4EIOrc8'; // Replace with your authentication token
 
+// document.getElementById('login').addEventListener('changeda', login);
 async function fonc() {
     try {
         // const token = document.cookie.split("; ")
@@ -15,18 +16,18 @@ async function fonc() {
             credentials: 'include',
             // withCredentials: true,
         });
-        let div = document.getElementById('dd');
-        if (response.ok)
-            div.style.display = 'block';
-        else 
-            div.style.display = 'none';
+        // let div = document.getElementById('dd');
+        // if (response.ok)
+        //     div.style.display = 'block';
+        // else 
+        //     div.style.display = 'none';
         if (response.ok) {
             const data = await response.json();
             console.log('dsgsdgsdgsdg---------',data);
             document.getElementById('img').setAttribute('src', data.image);
-            document.getElementById('name').innerText = 'Username: ' + data.userName;
-            document.getElementById('email').innerText = 'Email: ' + data.email;
-            document.getElementById('fe').innerText = JSON.stringify(data);
+            document.getElementById('name').innerText =  data.userName;
+            // document.getElementById('email').innerText = 'Email: ' + data.email;
+            // document.getElementById('fe').innerText = JSON.stringify(data);
         } else {
             throw new Error('Error: ' + response.status);
         }
@@ -144,7 +145,7 @@ async function jgame(){
     }
 }
 
-function sendRequest() {
+async function sendRequest() {
 
     const value = document.getElementById('input').value;
     console.log(value);
@@ -170,7 +171,7 @@ function sendRequest() {
       credentials: 'include',
     };
   
-    fetch(requestUrl, requestOptions)
+    await fetch(requestUrl, requestOptions)
       .then(response => response.json())
       .then(data => {
         console.log('Response:', data);
@@ -182,8 +183,7 @@ function sendRequest() {
       });
   }
 
-
-  function request() {
+  async function request() {
 
     const requestUrl = 'http://localhost:3000/user/get';
   
@@ -194,8 +194,8 @@ function sendRequest() {
       credentials: 'include',
     };
   
-    fetch(requestUrl, requestOptions)
-      .then(response => response.json())
+   await fetch(requestUrl, requestOptions)
+     .then(response => response.json())
       .then(data => {
         console.log('Response:', data);
         const container = document.getElementById('container');
@@ -203,12 +203,17 @@ function sendRequest() {
         
         data.forEach(user => {
         const imageElement = document.createElement('img');
+        imageElement.classList.add('containerimg');
         imageElement.src = user.image;
 
         const nameElement = document.createElement('p');
         nameElement.textContent = user.userName;
 
         const userContainer = document.createElement('div');
+        userContainer.classList.add('containerdiv');
+        userContainer.onclick = () => {
+            getUserName(user.userName, user.image);
+        }
         userContainer.appendChild(imageElement);
         userContainer.appendChild(nameElement);
 
@@ -248,3 +253,11 @@ function sendRequest() {
 //     }
 // }
 
+// const script = document.createElement('script');
+// script.src = "https://cdn.socket.io/4.7.4/socket.io.min.js";
+// script.onload = () => {
+//   // The library is loaded, you can now use it
+//   const socket = io('http://localhost:3000');
+//   // ...
+// };
+// document.head.appendChild(script);

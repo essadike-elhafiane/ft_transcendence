@@ -5,9 +5,10 @@ import { GameModule } from './game/game.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
+import { WebSocketModule } from './WebSocket/websocket.module';
 
 @Module({
-  imports: [PassportModule.register({session: true}), ConfigModule.forRoot({isGlobal: true,}) ,AuthMod, UserModule, GameModule, PrismaModule],
+  imports: [PassportModule.register({session: true}), ConfigModule.forRoot({isGlobal: true,}) ,AuthMod, UserModule, GameModule, PrismaModule, WebSocketModule],
 })
 
 export class AppModule {}

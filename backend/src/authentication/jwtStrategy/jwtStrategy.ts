@@ -7,16 +7,14 @@ import { Request } from 'express';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
+      tryCatch: true,
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: Request) => { 
-          let token = null;
-          console.log(request.cookies);
-          if (request && request.cookies) {
-            token = request.cookies.jwt;
-          }
-          return token;
+        (request: Request) => {
+          console.log(request);
+          return request?.cookies?.jwt;
         },
-      ]),
+      ])
+,
       secretOrKey: 'essadike',
     });
   }
