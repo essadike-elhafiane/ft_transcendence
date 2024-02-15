@@ -35,9 +35,9 @@ export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
         const profileResponse = await axios.get('https://api.intra.42.fr/v2/me', {
             headers: { Authorization: `Bearer ${accessToken}` }
         });
-        console.log(accessToken);
+        // console.log(accessToken);
         const profile2 = profileResponse.data;
-        console.log(profile2.email, profile2.login, profile2.image.link);
+        // console.log(profile2.email, profile2.login, profile2.image.link);
         const user = await this.AuthS.ValideteUser(profile2.email, profile2.login, profile2.image.link);
         const token: string = generateJwtToken(user);
         // const fs = require('fs');

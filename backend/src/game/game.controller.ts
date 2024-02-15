@@ -11,14 +11,14 @@ export class gameController{
     @Get('generategame')
     @UseGuards(JwtAuthGuard)
     async createGame(@Req() request: Request){
-        console.log(request.user['userId']);
+        // console.log(request.user['userId']);
         return await this.gameService.generateGame(request.user['userId'], 'gameName');
     }
 
     @Get('joingame')
     @UseGuards(JwtAuthGuard)
     async joinGame(@Req() request: Request){
-        console.log(request.query.gameid);
+        // console.log(request.query.gameid);
         const id: number = parseInt(request.query.gameid as string, 10);
         return await this.gameService.joinGame(id ,request.user['userId']);
     }

@@ -5,6 +5,8 @@ import * as session from 'express-session'
 import * as passport from 'passport'
 import * as cookieParser from 'cookie-parser';
 import { WsAdapter } from '@nestjs/platform-ws';
+
+
 async function server() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
@@ -22,10 +24,13 @@ async function server() {
   }))
 
   app.use(cookieParser());
+
   app.enableCors({
     origin: 'http://localhost:5500',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept',
     credentials: true,
-  })
+  });
   // app.useWebSocketAdapter(new WsAdapter(app));
 
   app.use(passport.initialize());

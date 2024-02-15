@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 // import { User, GameData } from "@prisma/client";
 import { prismaService } from "src/prisma/prisma.service";
-import { dataForm, gameData } from "./dto/form";
+import { LoginData, gameData } from "./dto/form";
 import * as argon from 'argon2';
 import { use } from "passport";
 // import { JwtService } from "@nestjs/jwt";
@@ -10,7 +10,7 @@ import { use } from "passport";
 export class authService {
     constructor(private prism: prismaService,){};
     
-    async login(req: dataForm){
+    async singup(req: LoginData){
         console.log(req.password);
         const hash = await argon.hash(req.password);
         const data = await this.prism.user.create({
@@ -39,7 +39,10 @@ export class authService {
             }
         })
         if (user)
+        {
+            this.ValidateToken(user.email, true);
             delete user.hash;
+        }
         if (user && !user.token)
             return null;
         return user || null;
@@ -55,6 +58,7 @@ export class authService {
             },
             data:{
                 token : bool,
+                online: bool,
             }
         })
     }
@@ -98,7 +102,7 @@ export class authService {
         return 'hello';
     }
 
-    async singin(req: dataForm){
+    async singin(req: LoginData){
         const user = await this.prism.user.findFirst({
             where: {
               OR: [
@@ -111,9 +115,9 @@ export class authService {
         if (user && await argon.verify(user.hash, req.password))
         {
             delete user.hash;
-            return user;
+            return {'user': user};
         }
         else
-            return 'password icorrect !!';
+            return {'error' : 'password icorrect !!'};
     }
 }

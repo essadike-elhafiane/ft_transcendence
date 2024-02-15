@@ -16,9 +16,9 @@ export class GoogleStregy extends PassportStrategy(Strategy){
         })
     }
     async validate(accessToken: string, refreshToken: string, profile: Profile, done: Function){
-        console.log(accessToken);
-        console.log(refreshToken);
-        console.log(profile.photos[0].value);
+        // console.log(accessToken);
+        // console.log(refreshToken);
+        // console.log(profile.photos[0].value);
         const user = await this.Auth.ValideteUser(profile.emails[0].value, profile.displayName, profile.photos[0].value);
         // // console.log(profile);
         // const payload = { email: user.email, sub: user.id };

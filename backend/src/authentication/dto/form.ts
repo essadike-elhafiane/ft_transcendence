@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString, ValidateIf } from "class-validator";
 import { type } from "os";
 
-export class dataForm{
+export class LoginData{
 
     @ValidateIf(o => !o.userName)
     @IsEmail()

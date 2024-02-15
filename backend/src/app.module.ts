@@ -7,8 +7,9 @@ import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { WebSocketModule } from './WebSocket/websocket.module';
 
+
 @Module({
-  imports: [PassportModule.register({session: true}), ConfigModule.forRoot({isGlobal: true,}) ,AuthMod, UserModule, GameModule, PrismaModule, WebSocketModule],
+  imports: [PassportModule.register({session: true}), ConfigModule.forRoot({isGlobal: true,}) ,AuthMod, UserModule, GameModule, PrismaModule, WebSocketModule, ],
 })
 
 export class AppModule {}
