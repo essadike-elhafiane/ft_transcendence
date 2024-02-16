@@ -1,5 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, ValidateIf } from "class-validator";
-import { type } from "os";
+import { IsEmail, IsNotEmpty, IsString, Matches, MinLength, ValidateIf } from "class-validator";
+
 
 export class LoginData{
 
@@ -17,6 +17,34 @@ export class LoginData{
     @IsNotEmpty()
     @IsString()
     userName?: string;
+}
+
+export class SingupData{
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @Matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])/gm, {
+        message: 'Password must contain at least one uppercase letter and one number and one lowercase letter',
+    })
+    @MinLength(6, {
+        message: 'Password must be at least 5 characters long',
+    })
+    password: string;
+
+    @IsNotEmpty()
+    @IsString()
+    userName: string;
+    
+    @IsNotEmpty()
+    @IsString()
+    lastName: string;
+
+    @IsNotEmpty()
+    @IsString()
+    firstName: string;
 }
 
 export type user = {

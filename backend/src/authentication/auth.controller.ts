@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { authService } from "./auth.service";
 import { Request, Response } from 'express';
-import { LoginData } from "./dto/form";
+import { LoginData, SingupData } from "./dto/form";
 import { GoogleAuthGuard } from "./googleStategy/googleGuards";
 // import { IntraGuard } from "./intraStrategy/intraGuard";
 import { AuthGuard } from "@nestjs/passport";
@@ -22,6 +22,15 @@ export class authController{
             response.cookie('jwt', generateJwtToken(user.user),).send({'login': 'login success !'});
     }
     
+    @Post('singup')
+    async singup(@Body() req: SingupData, @Res() response: Response){
+        const user = await this.authS.singup(req);
+        if (user.error)
+            response.status(400).json(user);
+        else
+            response.cookie('jwt', generateJwtToken(user.user),).send({'login': 'login success !'});
+    }
+
     @Get('api/auth/google')
     @UseGuards(AuthGuard("google"))
     googlesingup(@Req() req: Request, @Res() response: Response){

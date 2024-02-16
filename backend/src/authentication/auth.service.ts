@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 // import { User, GameData } from "@prisma/client";
 import { prismaService } from "src/prisma/prisma.service";
-import { LoginData, gameData } from "./dto/form";
+import { LoginData, SingupData, gameData } from "./dto/form";
 import * as argon from 'argon2';
 import { use } from "passport";
 // import { JwtService } from "@nestjs/jwt";
@@ -10,23 +10,27 @@ import { use } from "passport";
 export class authService {
     constructor(private prism: prismaService,){};
     
-    async singup(req: LoginData){
+    async singup(req: SingupData){
         console.log(req.password);
-        const hash = await argon.hash(req.password);
-        const data = await this.prism.user.create({
-            data:{
-                email : req.email,
-                hash : hash,
-                userName : req.userName,
-            },
-            select:{
-                email: true,
-                firstName: true,
-                createdAt: true,
-            }
-        })
-        console.log(hash);
-        return data;
+        try{
+            const hash = await argon.hash(req.password);
+            const data = await this.prism.user.create({
+                data:{
+                    email : req.email,
+                    lastName : req.lastName,
+                    firstName : req.firstName,
+                    hash : hash,
+                    userName : req.userName,
+                }
+            })
+            if (data)
+                delete data.hash;
+            console.log(hash);
+            return {'user': data};
+        }
+        catch (error){
+            return {'error': error.message};
+        }
     }
 
     
