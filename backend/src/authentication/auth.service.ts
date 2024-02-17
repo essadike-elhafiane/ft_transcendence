@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 // import { User, GameData } from "@prisma/client";
 import { prismaService } from "src/prisma/prisma.service";
-import { LoginData, SingupData, gameData } from "./dto/form";
+import { LoginData, signupData, gameData } from "./dto/form";
 import * as argon from 'argon2';
 import { use } from "passport";
 // import { JwtService } from "@nestjs/jwt";
@@ -10,8 +10,8 @@ import { use } from "passport";
 export class authService {
     constructor(private prism: prismaService,){};
     
-    async singup(req: SingupData){
-        console.log(req.password);
+    async signup(req){
+        // console.log(req.password);
         try{
             const hash = await argon.hash(req.password);
             const data = await this.prism.user.create({
@@ -25,11 +25,12 @@ export class authService {
             })
             if (data)
                 delete data.hash;
-            console.log(hash);
+            // console.log(hash);
             return {'user': data};
         }
         catch (error){
-            return {'error': error.message};
+            console.log(error.meta?.target[0]);
+            return {'error': {message: `this ${error.meta?.target[0]} already exist`, target: error.meta?.target[0]}};
         }
     }
 
@@ -97,7 +98,7 @@ export class authService {
     }
 
 
-    async  googlesingup() {
+    async  googlesignup() {
 
         return 'hello i\'m signin with google'
     };

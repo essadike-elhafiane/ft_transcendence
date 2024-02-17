@@ -26,7 +26,7 @@ async function server() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: 'http://localhost:5500',
+    origin: process.env.FRONTEND_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept',
     credentials: true,

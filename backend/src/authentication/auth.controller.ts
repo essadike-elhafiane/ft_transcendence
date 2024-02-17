@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { authService } from "./auth.service";
 import { Request, Response } from 'express';
-import { LoginData, SingupData } from "./dto/form";
+import { LoginData, signupData } from "./dto/form";
 import { GoogleAuthGuard } from "./googleStategy/googleGuards";
 // import { IntraGuard } from "./intraStrategy/intraGuard";
 import { AuthGuard } from "@nestjs/passport";
@@ -11,8 +11,14 @@ import { generateJwtToken } from "./jwtStrategy/jwtToken";
 
 @Controller()
 export class authController{
-    constructor (private authS: authService){}
+
+
+    private readonly BackendUrl = process.env.FRONTEND_URL;
+
+    constructor (private authS: authService){
+    }
     
+
     @Post('singin')
     async loginn(@Body() req: LoginData, @Res() response: Response){
         const user = await this.authS.singin(req);
@@ -22,25 +28,26 @@ export class authController{
             response.cookie('jwt', generateJwtToken(user.user),).send({'login': 'login success !'});
     }
     
-    @Post('singup')
-    async singup(@Body() req: SingupData, @Res() response: Response){
-        const user = await this.authS.singup(req);
+    @Post('signup')
+    async signup(@Body() req, @Res() response: Response){
+        console.log('fgdfgd',req);
+        const user = await this.authS.signup(req);
         if (user.error)
-            response.status(400).json(user);
+            response.status(400).json(user.error);
         else
             response.cookie('jwt', generateJwtToken(user.user),).send({'login': 'login success !'});
     }
 
     @Get('api/auth/google')
     @UseGuards(AuthGuard("google"))
-    googlesingup(@Req() req: Request, @Res() response: Response){
-        response.cookie('jwt', req.user['jwt'],).redirect('http://localhost:5500/');
+    googlesignup(@Req() req: Request, @Res() response: Response){
+        response.cookie('jwt', req.user['jwt'],).redirect(this.BackendUrl);
     }
 
     @Get('api/auth/intra')
     @UseGuards(AuthGuard('intra'))
     intraLogin(@Req() request: Request, @Res() response: Response){
-        response.cookie('jwt', request.user,).redirect('http://localhost:5500');
+        response.cookie('jwt', request.user,).redirect(this.BackendUrl);
     }
 
     @Get('status')
@@ -59,11 +66,6 @@ export class authController{
         // console.log(request.user['email']);
         this.authS.ValidateToken(request.user['email'], false);
         res.clearCookie('jwt').send({'logout': 'logout success !'});
-    }
-
-    @Post('hello')
-    hello(@Body() req: LoginData) {  
-        return this.authS.singin(req);
     }
 }
 

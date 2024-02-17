@@ -19,31 +19,31 @@ export class LoginData{
     userName?: string;
 }
 
-export class SingupData{
+export class signupData{
     @IsEmail()
     @IsNotEmpty()
     email: string;
 
-    @IsNotEmpty()
-    @IsString()
-    @Matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])/gm, {
-        message: 'Password must contain at least one uppercase letter and one number and one lowercase letter',
-    })
-    @MinLength(6, {
-        message: 'Password must be at least 5 characters long',
-    })
+    // @IsNotEmpty()
+    // @IsString()
+    // @Matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])/gm, {
+    //     message: 'Password must contain at least one uppercase letter and one number and one lowercase letter',
+    // })
+    // @MinLength(6, {
+    //     message: 'Password must be at least 5 characters long',
+    // })
     password: string;
 
-    @IsNotEmpty()
-    @IsString()
+    // @IsNotEmpty()
+    // @IsString()
     userName: string;
     
-    @IsNotEmpty()
-    @IsString()
+    // @IsNotEmpty()
+    // @IsString()
     lastName: string;
 
-    @IsNotEmpty()
-    @IsString()
+    // @IsNotEmpty()
+    // @IsString()
     firstName: string;
 }
 
