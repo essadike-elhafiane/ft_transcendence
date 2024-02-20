@@ -1,7 +1,23 @@
 {
     "version": 2,
     "env": {
-        "MONGO_URI": "@shop_api_mongo_uri"
+        "POSTGRES_PASSWORD":"uSEGXARYr8yJi4nlDZhAbfIsLpAjQGT8",
+        "POSTGRES_USER":"essadike",
+        "POSTGRES_DB":"trancendence",
+
+"DATABASE_URL":"postgres://essadike:uSEGXARYr8yJi4nlDZhAbfIsLpAjQGT8@dpg-cna9078cmk4c73a37u10-a.oregon-postgres.render.com/trancendence",
+"GOOGLE_CLIENT_ID":"1023584909274-lshssuqe1te4vdej7eoe6rsc31n16qvc.apps.googleusercontent.com",
+"GOOGLE_CLIENT_SECRET":"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",
+"GOOGLE_URL":"http://localhost:3000/api/auth/google",
+
+
+
+"INTRA_CLIENT_ID":"u-s4t2ud-0253d352d027ff1205add2c04dbbdb578015ef61de605a1f1e942a8491da02d2",
+"INTRA_CLIENT_SECRET":"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",
+"INTRA_URL":"http://localhost:3000/api/auth/intra",
+
+
+"FRONTEND_URL":"http://localhost:5500"
     },
     "builds": [
         {
