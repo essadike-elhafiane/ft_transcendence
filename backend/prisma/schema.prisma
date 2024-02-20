@@ -25,6 +25,7 @@ model User {
   online    Boolean   @default(false)
   sentRequests   FriendRequest[] @relation("Sender")
   friendRequests    FriendRequest[] @relation("Receiver")
+  update    Boolean   @default(false)
   // friends         Friends[]       @relation("Friends", references: [id])
   // friendOf        User[]          @relation("", references: [id])
   @@map("Users")

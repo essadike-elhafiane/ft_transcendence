@@ -1,12 +1,12 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { authService } from "./auth.service";
 import { Request, Response } from 'express';
 import { LoginData, signupData } from "./dto/form";
-import { GoogleAuthGuard } from "./googleStategy/googleGuards";
-// import { IntraGuard } from "./intraStrategy/intraGuard";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
 import { generateJwtToken } from "./jwtStrategy/jwtToken";
+import { FileInterceptor } from "@nestjs/platform-express";
+
 
 
 @Controller()
@@ -18,6 +18,7 @@ export class authController{
     constructor (private authS: authService){
     }
     
+    // private storage = new Storage();
 
     @Post('singin')
     async loginn(@Body() req: LoginData, @Res() response: Response){
@@ -29,8 +30,8 @@ export class authController{
     }
     
     @Post('signup')
-    async signup(@Body() req, @Res() response: Response){
-        console.log('fgdfgd',req);
+    async signup(@Body() req: signupData, @Res() response: Response){ 
+        console.log('user',req);
         const user = await this.authS.signup(req);
         if (user.error)
             response.status(400).json(user.error);
@@ -47,7 +48,7 @@ export class authController{
     @Get('api/auth/intra')
     @UseGuards(AuthGuard('intra'))
     intraLogin(@Req() request: Request, @Res() response: Response){
-        response.cookie('jwt', request.user,).redirect(this.BackendUrl);
+         response.cookie('jwt', request.user,).redirect(this.BackendUrl);
     }
 
     @Get('status')
@@ -62,10 +63,27 @@ export class authController{
    
     @Get('logout')
     @UseGuards(JwtAuthGuard)
-    home(@Req() request: Request, @Res() res: Response){
+    async home(@Req() request: Request, @Res() res: Response){
         // console.log(request.user['email']);
-        this.authS.ValidateToken(request.user['email'], false);
+        await this.authS.ValidateToken(request.user['email'], false);
         res.clearCookie('jwt').send({'logout': 'logout success !'});
+    }
+
+    @Post('/upload')
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadFile(@UploadedFile() file, @Req() req: Request, @Res() res: Response){
+        
+        console.log(file);
+        const fileBase64 = file.buffer.toString('base64');
+        // You might want to prepend the data URL scheme that indicates the content type, for example:
+        const base64DataURI : string = `data:${file.mimetype};base64,${fileBase64}`;
+        // console.log(base64DataURI);
+        const user = await this.authS.Changedata(req.user['userId'], base64DataURI);
+        if (user.error)
+            res.status(400).json(user.error);
+        else
+            res.send('ok');
     }
 }
 

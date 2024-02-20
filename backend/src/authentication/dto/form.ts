@@ -20,31 +20,32 @@ export class LoginData{
 }
 
 export class signupData{
+    @IsNotEmpty()
+    @IsString()
+    userName: string;
+    
     @IsEmail()
     @IsNotEmpty()
     email: string;
 
-    // @IsNotEmpty()
-    // @IsString()
-    // @Matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])/gm, {
-    //     message: 'Password must contain at least one uppercase letter and one number and one lowercase letter',
-    // })
-    // @MinLength(6, {
-    //     message: 'Password must be at least 5 characters long',
-    // })
+    @IsString()
+    @MinLength(6, {
+        message: 'Password must be at least 6 characters long',
+    })
+    @Matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])/gm, {
+        message: 'Password must contain at least one uppercase letter and one number and one lowercase letter',
+    })
+    @IsNotEmpty()
     password: string;
-
-    // @IsNotEmpty()
-    // @IsString()
-    userName: string;
+    
     
     // @IsNotEmpty()
     // @IsString()
-    lastName: string;
+    // lastName: string;
 
-    // @IsNotEmpty()
-    // @IsString()
-    firstName: string;
+    // // @IsNotEmpty()
+    // // @IsString()
+    // firstName: string;
 }
 
 export type user = {

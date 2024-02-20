@@ -1,24 +1,67 @@
 import { Injectable } from "@nestjs/common";
-// import { User, GameData } from "@prisma/client";
 import { prismaService } from "src/prisma/prisma.service";
-import { LoginData, signupData, gameData } from "./dto/form";
+import { LoginData, signupData } from "./dto/form";
 import * as argon from 'argon2';
-import { use } from "passport";
-// import { JwtService } from "@nestjs/jwt";
+
 
 @Injectable({})
 export class authService {
     constructor(private prism: prismaService,){};
     
-    async signup(req){
+
+    async generateUniqueUsername(baseUsername: string): Promise<string> {
+        let uniqueUsername = baseUsername;
+        let suffix = 0;
+        let userExists = true;
+    
+        while (userExists) {
+          try {
+            const user = await this.prism.user.findUnique({
+              where: { userName: uniqueUsername },
+            });
+            if (!user) {
+              userExists = false;
+            } else {
+                if (suffix === 0)
+                    return uniqueUsername;
+                uniqueUsername = `${baseUsername}${suffix}`;
+                suffix++;
+            }
+          } catch (error) {
+            throw new Error('An error occurred while checking for username uniqueness.');
+          }
+        }
+    
+        return uniqueUsername;
+    }
+
+    async Changedata(id: number, image: string){
+        try{
+            const user = await this.prism.user.update({
+                where:{
+                    id,
+                },
+                data:{
+                    image,
+                    update : true
+                }
+            })
+            return {'user' : user};
+        }
+        catch (error){
+            return {'error': error};
+        }
+    }
+
+    async signup(req: signupData){
         // console.log(req.password);
         try{
             const hash = await argon.hash(req.password);
             const data = await this.prism.user.create({
                 data:{
                     email : req.email,
-                    lastName : req.lastName,
-                    firstName : req.firstName,
+                    // lastName : req.lastName,
+                    // firstName : req.firstName,
                     hash : hash,
                     userName : req.userName,
                 }
@@ -29,8 +72,11 @@ export class authService {
             return {'user': data};
         }
         catch (error){
-            console.log(error.meta?.target[0]);
-            return {'error': {message: `this ${error.meta?.target[0]} already exist`, target: error.meta?.target[0]}};
+            // console.log(error.meta?.target[0]);
+            if (error.meta?.target[0])
+                return {'error': {message: `this ${error.meta?.target[0]} already exist`, target: error.meta?.target[0]}};
+            else
+                return {'error': error};
         }
     }
 
@@ -74,37 +120,40 @@ export class authService {
             where:{
                 email
             },
+            select:{
+                id: true,
+                email: true,
+                userName: true,
+                image: false,
+                token: false,
+            }
         });
         if (user)
         {
             this.ValidateToken(email, true)
             return user;
         }
-
         else{
-            const hash = await argon.hash('req.password');
-            const data = await this.prism.user.create({
+            try{
+                const username = await this.generateUniqueUsername(userName)
+                const hash = await argon.hash('req.password');
+                const data = await this.prism.user.create({
                 data:{
-                    email  : email,
-                    hash : hash,
-                    userName : userName,
-                    firstName: 'hhhhh',
-                    image: image,
-                    token: true,
-                },
-            })
-            return data;
+                        email  : email,
+                        hash : hash,
+                        userName : username,
+                        firstName: 'hhhhh',
+                        image: image,
+                        token: true,
+                        // online: true,
+                    },
+                })
+                return data;
+            }
+            catch (error){
+                console.log(error);
+            }
         }
-    }
-
-
-    async  googlesignup() {
-
-        return 'hello i\'m signin with google'
-    };
-
-    async googlesingin(){
-        return 'hello';
     }
 
     async singin(req: LoginData){
