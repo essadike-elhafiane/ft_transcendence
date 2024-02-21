@@ -46,8 +46,6 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-            maxAge: 3600,
-            path: '/',
         }).redirect(this.BackendUrl);
     }
 
@@ -58,8 +56,6 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-            maxAge: 3600,
-            path: '/',
         }).redirect(this.BackendUrl);
     }
 
