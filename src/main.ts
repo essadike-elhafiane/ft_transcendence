@@ -12,16 +12,6 @@ async function server() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }))
-  app.use(session({
-    secret: 'essadike',
-    saveUninitialized: false,
-    resave: false,
-    cookie: {
-      maxAge : 60000 * 5,
-      httpOnly: true,
-      // secret: 'fhdfhdfhdfhdfhd',
-    },
-  }))
 
   app.use(cookieParser());
 
@@ -30,18 +20,6 @@ async function server() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept',
     credentials: true,
-  });
-  // app.useWebSocketAdapter(new WsAdapter(app));
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  passport.serializeUser((user, done) => {
-    done(null, user);
-  });
-
-  passport.deserializeUser((user, done) => {
-    done(null, user);
   });
 
   await app.listen(3000);

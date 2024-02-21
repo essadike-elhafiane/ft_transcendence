@@ -124,8 +124,6 @@ export class authService {
                 id: true,
                 email: true,
                 userName: true,
-                image: false,
-                token: false,
             }
         });
         if (user)
@@ -147,6 +145,11 @@ export class authService {
                         token: true,
                         // online: true,
                     },
+                    select:{
+                        id: true,
+                        email: true,
+                        userName: true,
+                    }
                 })
                 return data;
             }
@@ -156,7 +159,7 @@ export class authService {
         }
     }
 
-    async singin(req: LoginData){
+    async signin(req: LoginData){
         const user = await this.prism.user.findFirst({
             where: {
               OR: [
@@ -164,10 +167,16 @@ export class authService {
                 { userName: req.userName},
               ],
             },
-          });
-        console.log(req.email , "     ", req.userName)
+            select:{
+                id: true,
+                email: true,
+                userName: true,
+                hash: true,
+            }
+        });
         if (user && await argon.verify(user.hash, req.password))
         {
+            console.log(req.email , "     ", req.userName)
             delete user.hash;
             return {'user': user};
         }

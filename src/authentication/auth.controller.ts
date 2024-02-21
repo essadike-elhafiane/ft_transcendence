@@ -17,12 +17,11 @@ export class authController{
 
     constructor (private authS: authService){
     }
-    
-    // private storage = new Storage();
 
-    @Post('singin')
+    @Post('signin')
     async loginn(@Body() req: LoginData, @Res() response: Response){
-        const user = await this.authS.singin(req);
+        console.log(req);
+        const user = await this.authS.signin(req);
         if (user.error)
             response.status(400).json(user);
         else
