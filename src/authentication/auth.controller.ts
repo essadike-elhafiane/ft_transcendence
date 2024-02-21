@@ -28,7 +28,7 @@ export class authController{
             response.cookie('jwt', generateJwtToken(user.user), {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'none',
             }).send({'login': 'login success !'});
     }
     
@@ -42,7 +42,7 @@ export class authController{
             response.cookie('jwt', generateJwtToken(user.user), {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'none',
             }).send({'login': 'login success !'});
     }
 
@@ -52,7 +52,7 @@ export class authController{
         response.cookie('jwt', req.user['jwt'], {
             httpOnly: true,
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
         }).redirect(this.BackendUrl + process.env.PREFIX);
     }
 
@@ -62,7 +62,7 @@ export class authController{
          response.cookie('jwt', request.user, {
             httpOnly: true,
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
         }).redirect(this.BackendUrl + process.env.PREFIX);
     }
 
@@ -84,7 +84,7 @@ export class authController{
         res.clearCookie('jwt',{
             httpOnly: true,
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
         }).send({'logout': 'logout success !'});
     }
 
