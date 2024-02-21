@@ -1,11 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as session from 'express-session'
-import * as passport from 'passport'
 import * as cookieParser from 'cookie-parser';
-import { WsAdapter } from '@nestjs/platform-ws';
-
+import { Request, Response, NextFunction } from 'express';
 
 async function server() {
   const app = await NestFactory.create(AppModule);
@@ -22,7 +19,12 @@ async function server() {
     credentials: true,
   });
 
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    res.header('Permissions-Policy', 'interest-cohort=()');
+    next();
+  });
+  
   await app.listen(3000);
 }
 
-server();
+server().catch(console.error);
