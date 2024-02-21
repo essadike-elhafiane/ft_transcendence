@@ -82,7 +82,11 @@ export class authController{
     async home(@Req() request: Request, @Res() res: Response){
         // console.log(request.user['email']);
         await this.authS.ValidateToken(request.user['email'], false);
-        res.clearCookie('jwt').send({'logout': 'logout success !'});
+        res.clearCookie('jwt',{
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        }).send({'logout': 'logout success !'});
     }
 
     @Post('/upload')
