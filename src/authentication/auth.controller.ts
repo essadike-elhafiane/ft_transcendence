@@ -26,7 +26,11 @@ export class authController{
         if (user.error)
             response.status(400).json(user);
         else
-            response.cookie('jwt', generateJwtToken(user.user),).send({'login': 'login success !'});
+            response.cookie('jwt', generateJwtToken(user.user), {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+            }).send({'login': 'login success !'});
     }
     
     @Post('signup')
@@ -36,7 +40,11 @@ export class authController{
         if (user.error)
             response.status(400).json(user.error);
         else
-            response.cookie('jwt', generateJwtToken(user.user),).send({'login': 'login success !'});
+            response.cookie('jwt', generateJwtToken(user.user), {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+            }).send({'login': 'login success !'});
     }
 
     @Get('api/auth/google')
@@ -46,7 +54,7 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-        }).redirect(this.BackendUrl);
+        }).redirect(this.BackendUrl + process.env.PREFIX);
     }
 
     @Get('api/auth/intra')
@@ -56,7 +64,7 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-        }).redirect(this.BackendUrl);
+        }).redirect(this.BackendUrl + process.env.PREFIX);
     }
 
     @Get('status')
