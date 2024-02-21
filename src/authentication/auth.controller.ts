@@ -42,13 +42,25 @@ export class authController{
     @Get('api/auth/google')
     @UseGuards(AuthGuard("google"))
     googlesignup(@Req() req: Request, @Res() response: Response){
-        response.cookie('jwt', req.user['jwt'], 'SameSite=None; Secure; Path=/; Max-Age=3600; HttpOnly').redirect(this.BackendUrl);
+        response.cookie('jwt', req.user['jwt'], {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 3600,
+            path: '/',
+        }).redirect(this.BackendUrl);
     }
 
     @Get('api/auth/intra')
     @UseGuards(AuthGuard('intra'))
     intraLogin(@Req() request: Request, @Res() response: Response){
-         response.cookie('jwt', request.user, 'SameSite=None; Secure; Path=/; Max-Age=3600; HttpOnly').redirect(this.BackendUrl);
+         response.cookie('jwt', request.user, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 3600,
+            path: '/',
+        }).redirect(this.BackendUrl);
     }
 
     @Get('status')
