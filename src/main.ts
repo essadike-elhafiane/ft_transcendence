@@ -19,10 +19,10 @@ async function server() {
     credentials: true,
   });
 
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    res.header('Permissions-Policy', 'interest-cohort=()');
-    next();
-  });
+  // app.use((req: Request, res: Response, next: NextFunction) => {
+  //   res.header('Permissions-Policy', 'interest-cohort=()');
+  //   next();
+  // });
   
   await app.listen(3000);
 }

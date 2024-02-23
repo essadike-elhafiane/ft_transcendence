@@ -43,7 +43,6 @@ export class authController{
                 httpOnly: true,
                 secure: true,
                 sameSite: 'none',
-                domain: process.env.FRONTEND_URL,
             }).send({'login': 'login success !'});
     }
 
@@ -54,7 +53,6 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-            domain: process.env.FRONTEND_URL,
         }).redirect(this.BackendUrl + process.env.PREFIX);
     }
 
@@ -65,7 +63,6 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-            domain: process.env.FRONTEND_URL,
         }).redirect(this.BackendUrl + process.env.PREFIX);
     }
 
