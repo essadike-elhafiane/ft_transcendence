@@ -1,0 +1,18 @@
+{
+    "version": 2,
+    "env": {
+      "DATABASE_URL": "postgres://essadike:uSEGXARYr8yJi4nlDZhAbfIsLpAjQGT8@dpg-cna9078cmk4c73a37u10-a.oregon-postgres.render.com/trancendence"
+    },
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/dist/main.js"
+      }
+    ]
+  }
