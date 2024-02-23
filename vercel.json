@@ -11,17 +11,17 @@
         "INTRA_URL":"http://localhost:3000/api/auth/intra",
         "FRONTEND_URL":"https://front-ashen-ten.vercel.app/"
         },
-    "builds": [
-      {
-        "src": "package.json",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/dist/main.js",
-        "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
-      }
-    ]
+        "builds": [
+            {
+              "src": "dist/main.js",
+              "use": "@vercel/node"
+            }
+          ],
+          "routes": [
+            {
+              "src": "/(.*)",
+              "dest": "dist/main.js",
+              "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
+            }
+          ]
 }
