@@ -22,7 +22,7 @@ export class authService {
             if (!user) {
               userExists = false;
             } else {
-                if (suffix === 0)
+                if (suffix === 0 && !userExists)
                     return uniqueUsername;
                 uniqueUsername = `${baseUsername}${suffix}`;
                 suffix++;
@@ -56,14 +56,17 @@ export class authService {
     async signup(req: signupData){
         // console.log(req.password);
         try{
-            const hash = await argon.hash(req.password);
+            const hash = await argon.hash('req.password');
+            const username = await this.generateUniqueUsername(req.firstName)
+            console.log(username);
             const data = await this.prism.user.create({
                 data:{
                     email : req.email,
-                    // lastName : req.lastName,
-                    // firstName : req.firstName,
+                    lastName : req.lastName,
+                    firstName : req.firstName,
                     hash : hash,
-                    userName : req.userName,
+                    userName : username,
+                    update: false
                 }
             })
             if (data)

@@ -34,8 +34,8 @@ export class authController{
     
     @Post('signup')
     async signup(@Body() req: signupData, @Res() response: Response){ 
-        console.log('user',req);
         const user = await this.authS.signup(req);
+        console.log('user',req, user);
         if (user.error)
             response.status(400).json(user.error);
         else
@@ -43,7 +43,7 @@ export class authController{
                 httpOnly: true,
                 secure: true,
                 sameSite: 'none',
-            }).send({'login': 'login success !'});
+            }).send({'login': 'login success !', 'user': user.user});
     }
 
     @Get('api/auth/google')

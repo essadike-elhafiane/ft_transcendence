@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, Matches, MinLength, ValidateIf } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength, ValidateIf, min, minLength } from "class-validator";
 
 
 export class LoginData{
@@ -20,32 +20,41 @@ export class LoginData{
 }
 
 export class signupData{
-    @IsNotEmpty()
-    @IsString()
-    userName: string;
+    // @IsNotEmpty()
+    // @IsString()
+    // userName: string;
     
     @IsEmail()
     @IsNotEmpty()
+    @MaxLength(40,
+        {message: 'lastName must be at most 16 characters long'})
     email: string;
 
-    @IsString()
-    @MinLength(6, {
-        message: 'Password must be at least 6 characters long',
-    })
-    @Matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])/gm, {
-        message: 'Password must contain at least one uppercase letter and one number and one lowercase letter',
-    })
-    @IsNotEmpty()
-    password: string;
-    
-    
-    // @IsNotEmpty()
     // @IsString()
-    // lastName: string;
+    // @MinLength(6, {
+    //     message: 'Password must be at least 6 characters long',
+    // })
+    // @Matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])/gm, {
+    //     message: 'Password must contain at least one uppercase letter and one number and one lowercase letter',
+    // })
+    // @IsNotEmpty()
+    // password: string;
+    
+    @MinLength(2,
+        {message: 'lastName must be at least 2 characters long'})
+    @MaxLength(20,
+        {message: 'lastName must be at most 16 characters long'})
+    @IsNotEmpty()
+    @IsString()
+    lastName: string;
 
-    // // @IsNotEmpty()
-    // // @IsString()
-    // firstName: string;
+    @MinLength(2,
+        {message: 'firstName must be at least 2 characters long'})
+    @MaxLength(20,
+        {message: 'firstName must be at most 16 characters long'})
+    @IsNotEmpty()
+    @IsString()
+    firstName: string;
 }
 
 export type user = {
