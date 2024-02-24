@@ -71,7 +71,7 @@ export class authController{
             sameSite: 'none',
             domain: process.env.FRONTEND_URL,
             path:'/'
-        }).redirect(this.BackendUrl + process.env.PREFIX);
+        }).redirect(this.BackendUrl + process.env.PREFIX + `#jwt=${request.user}`);
     }
 
     @Get('status')
