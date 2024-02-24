@@ -29,6 +29,8 @@ export class authController{
                 httpOnly: true,
                 secure: true,
                 sameSite: 'none',
+                domain: process.env.FRONTEND_URL,
+                path:'/'
             }).send({'login': 'login success !'});
     }
     
@@ -43,6 +45,8 @@ export class authController{
                 httpOnly: true,
                 secure: true,
                 sameSite: 'none',
+                domain: process.env.FRONTEND_URL,
+                path:'/'
             }).send({'login': 'login success !'});
     }
 
@@ -53,6 +57,8 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
+            domain: process.env.FRONTEND_URL,
+            path:'/'
         }).redirect(this.BackendUrl + process.env.PREFIX);
     }
 
@@ -63,6 +69,8 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
+            domain: process.env.FRONTEND_URL,
+            path:'/'
         }).redirect(this.BackendUrl + process.env.PREFIX);
     }
 
@@ -85,6 +93,8 @@ export class authController{
             httpOnly: true,
             secure: true,
             sameSite: 'none',
+            domain: process.env.FRONTEND_URL,
+            path:'/'
         }).send({'logout': 'logout success !'});
     }
 
