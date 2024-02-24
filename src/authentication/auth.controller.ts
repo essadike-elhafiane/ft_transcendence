@@ -56,7 +56,7 @@ export class authController{
             secure: true,
             sameSite: 'none',
             path:'/'
-        }).redirect(this.BackendUrl + process.env.PREFIX + `#jwt=${req.user['jwt']}`);
+        }).redirect(this.BackendUrl);
     }
 
     @Get('api/auth/intra')
@@ -67,7 +67,7 @@ export class authController{
             secure: true,
             sameSite: 'none',
             path:'/'
-        }).redirect(this.BackendUrl + process.env.PREFIX + `#jwt=${request.user}`);
+        }).redirect(this.BackendUrl);
     }
 
     @Get('status')
