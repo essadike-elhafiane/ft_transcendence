@@ -35,15 +35,18 @@ export class authService {
         return uniqueUsername;
     }
 
-    async Changedata(id: number, image: string){
+    async Changedata(id: number, image: string, userName: string, password: string){
         try{
+            const hash = await argon.hash(password);
             const user = await this.prism.user.update({
                 where:{
                     id,
                 },
                 data:{
                     image,
-                    update : true
+                    update : true,
+                    hash,
+                    userName,
                 }
             })
             return {'user' : user};
@@ -127,6 +130,7 @@ export class authService {
                 id: true,
                 email: true,
                 userName: true,
+                update: true,
             }
         });
         if (user)
@@ -152,6 +156,7 @@ export class authService {
                         id: true,
                         email: true,
                         userName: true,
+                        update: true,
                     }
                 })
                 return data;
@@ -175,6 +180,7 @@ export class authService {
                 email: true,
                 userName: true,
                 hash: true,
+                update: true,
             }
         });
         if (user && await argon.verify(user.hash, req.password))

@@ -33,9 +33,11 @@ export class socketService implements OnGatewayConnection, OnGatewayDisconnect {
         // Handle unauthorized connection
             client.disconnect();
             return;
+            
         }
         try {
             const payload = jwt.verify(token, 'essadike');
+            
             // const id : string = payload['id'];
             // console.log("|",id,"|");
             console.log();
@@ -63,7 +65,7 @@ export class socketService implements OnGatewayConnection, OnGatewayDisconnect {
     @SubscribeMessage('message')
     handleMessage(client: Socket, payload: Payload): string {
         console.log(client.id, " : ", payload.id);
-    
+        
         const recipientClientId = payload.id
         console.log(recipientClientId);
         const recipientClient = this.clients.get(recipientClientId);

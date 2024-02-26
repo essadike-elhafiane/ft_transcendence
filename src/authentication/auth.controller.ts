@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { authService } from "./auth.service";
 import { Request, Response } from 'express';
 import { LoginData, signupData } from "./dto/form";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
 import { generateJwtToken } from "./jwtStrategy/jwtToken";
-import { FileInterceptor } from "@nestjs/platform-express";
+import {ExpressAdapter, FileInterceptor, MulterModule} from "@nestjs/platform-express";
 
 
 
@@ -88,17 +88,24 @@ export class authController{
         }).send({'logout': 'logout success !'});
     }
 
-    @Post('/upload')
+    @Put('/update')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@UploadedFile() file, @Req() req: Request, @Res() res: Response){
-        
+    async uploadFile(@UploadedFile() file: Express.Multer.File, @Body('userName') userName: string,@Req() req: Request, @Body('Password') password: string , @Res() res: Response){
+       
+        // console.log(file);
         console.log(file);
+        console.log(userName);
+        console.log(password);
+        
+        
         const fileBase64 = file.buffer.toString('base64');
-        // You might want to prepend the data URL scheme that indicates the content type, for example:
+
+        // // You might want to prepend the data URL scheme that indicates the content type, for example:
         const base64DataURI : string = `data:${file.mimetype};base64,${fileBase64}`;
-        // console.log(base64DataURI);
-        const user = await this.authS.Changedata(req.user['userId'], base64DataURI);
+        // // console.log(base64DataURI);
+        const user = await this.authS.Changedata(req.user['userId'], base64DataURI, userName, password);
+        console.log(user);
         if (user.error)
             res.status(400).json(user.error);
         else
