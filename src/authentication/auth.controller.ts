@@ -91,7 +91,7 @@ export class authController{
     @Put('/update')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@UploadedFile() file: Express.Multer.File, @Body('userName') userName: string,@Req() req: Request, @Body('Password') password: string , @Res() res: Response){
+    async uploadFile(@UploadedFile() file: Express.Multer.File, @Body('image') image: string, @Body('userName') userName: string,@Req() req: Request, @Body('Password') password: string , @Res() res: Response){
        
         // console.log(file);
         console.log(file);
@@ -99,17 +99,30 @@ export class authController{
         console.log(password);
         
         
-        const fileBase64 = file.buffer.toString('base64');
+        // if (file)
+        try {
+            const fileBase64 = file.buffer.toString('base64');
 
-        // // You might want to prepend the data URL scheme that indicates the content type, for example:
-        const base64DataURI : string = `data:${file.mimetype};base64,${fileBase64}`;
-        // // console.log(base64DataURI);
-        const user = await this.authS.Changedata(req.user['userId'], base64DataURI, userName, password);
-        console.log(user);
-        if (user.error)
-            res.status(400).json(user.error);
-        else
-            res.send('ok');
+            // // You might want to prepend the data URL scheme that indicates the content type, for example:
+            const base64DataURI : string = `data:${file.mimetype};base64,${fileBase64}`;
+            
+            // // console.log(base64DataURI);
+            const user = await this.authS.Changedata(req.user['userId'], base64DataURI, userName, password);
+        
+            console.log(user);
+            if (user.error)
+                res.status(400).json(user.error);
+            else
+                res.send('ok');
+        } catch (error) {
+            if (!image)
+                res.status(400).json({error: 'image is required'});
+            const user = await this.authS.Changedata(req.user['userId'], image, userName, password);
+            if (user.error)
+                res.status(400).json(user.error);
+            else
+                res.send('ok');
+        }
     }
 }
 
