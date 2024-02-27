@@ -81,7 +81,7 @@ export class authController{
     @UseGuards(JwtAuthGuard)
     async home(@Req() request: Request, @Res() res: Response){
         // console.log(request.user['email']);
-        await this.authS.ValidateToken(request.user['email'], false);
+        await this.authS.ValidateToken(request.user['userId'], false);
         res.clearCookie('jwt',{
             httpOnly: true,
             secure: true,
