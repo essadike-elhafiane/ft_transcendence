@@ -69,7 +69,6 @@ export class authService {
                     firstName : req.firstName,
                     hash : hash,
                     userName : username,
-                    update: false
                 }
             })
             if (data)
