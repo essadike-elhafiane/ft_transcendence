@@ -39,11 +39,11 @@ export class authController{
         if (user.error)
             response.status(400).json(user.error);
         else
-            response.cookie('jwt', generateJwtToken(user.user), {
+            response.cookie('jwt', generateJwtToken(user.data), {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'none',
-            }).send({'login': 'login success !', 'user': user.user});
+            }).send(user.data);
     }
 
     @Get('api/auth/google')
@@ -66,9 +66,10 @@ export class authController{
         }).redirect(this.BackendUrl);
     }
 
-    @Get('status')
+    @Get('profile')
     @UseGuards(JwtAuthGuard)
     async user(@Req() request: Request, @Res() res: Response) {
+        console.log(request.user);
         const user = await this.authS.findUser(request.user['userId']);
         console.log(request.user['userId']);
         user ? res.json(user) : res.status(404).json({

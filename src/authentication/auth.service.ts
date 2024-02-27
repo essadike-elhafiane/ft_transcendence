@@ -57,7 +57,7 @@ export class authService {
     }
 
     async signup(req: signupData){
-        // console.log(req.password);
+        console.log(req);
         try{
             const hash = await argon.hash('req.password');
             const username = await this.generateUniqueUsername(req.firstName)
@@ -74,7 +74,7 @@ export class authService {
             if (data)
                 delete data.hash;
             // console.log(hash);
-            return {'user': data};
+            return {data};
         }
         catch (error){
             // console.log(error.meta?.target[0]);
@@ -89,28 +89,33 @@ export class authService {
     
     async findUser(id :number)
     {
-        const user = await this.prism.user.findUnique({
-            where: {
-                id
+        try{
+            const user = await this.prism.user.findUnique({
+                where: {
+                    id
+                }
+            })
+            if (user)
+            {
+                this.ValidateToken(id, true);
+                delete user.hash;
             }
-        })
-        if (user)
-        {
-            this.ValidateToken(user.email, true);
-            delete user.hash;
+            if (user && !user.token)
+                return null;
+            return user || null;
         }
-        if (user && !user.token)
-            return null;
-        return user || null;
+        catch (error){
+            return {'error': error};
+        }
     }
 
 
 
-    async ValidateToken(email:string, bool: boolean)
+    async ValidateToken(id: number, bool: boolean)
     {
         await this.prism.user.update({
             where:{
-                email,
+                id,
             },
             data:{
                 token : bool,
@@ -134,7 +139,7 @@ export class authService {
         });
         if (user)
         {
-            this.ValidateToken(email, true)
+            this.ValidateToken(user.id, true)
             return user;
         }
         else{
