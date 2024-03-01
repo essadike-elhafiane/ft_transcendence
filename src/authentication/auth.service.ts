@@ -126,74 +126,84 @@ export class authService {
 
     async ValideteUser(email: string, userName: string, image: string)
     {
-        const user = await this.prism.user.findUnique({
-            where:{
-                email
-            },
-            select:{
-                id: true,
-                email: true,
-                userName: true,
-                update: true,
+        try{
+            const user = await this.prism.user.findUnique({
+                where:{
+                    email
+                },
+                select:{
+                    id: true,
+                    email: true,
+                    userName: true,
+                    update: true,
+                }
+            });
+            if (user)
+            {
+                this.ValidateToken(user.id, true)
+                return user;
             }
-        });
-        if (user)
-        {
-            this.ValidateToken(user.id, true)
-            return user;
+            else{
+                try{
+                    const username = await this.generateUniqueUsername(userName)
+                    const hash = await argon.hash('req.password');
+                    const data = await this.prism.user.create({
+                    data:{
+                            email  : email,
+                            hash : hash,
+                            userName : username,
+                            firstName: 'hhhhh',
+                            image: image,
+                            token: true,
+                            // online: true,
+                        },
+                        select:{
+                            id: true,
+                            email: true,
+                            userName: true,
+                            update: true,
+                        }
+                    })
+                    return data;
+                }
+                catch (error){
+                    return {'error': error};
+                }
+            }
         }
-        else{
-            try{
-                const username = await this.generateUniqueUsername(userName)
-                const hash = await argon.hash('req.password');
-                const data = await this.prism.user.create({
-                data:{
-                        email  : email,
-                        hash : hash,
-                        userName : username,
-                        firstName: 'hhhhh',
-                        image: image,
-                        token: true,
-                        // online: true,
-                    },
-                    select:{
-                        id: true,
-                        email: true,
-                        userName: true,
-                        update: true,
-                    }
-                })
-                return data;
-            }
-            catch (error){
-                console.log(error);
-            }
+        catch (error){
+            return {'error': error};
         }
     }
 
     async signin(req: LoginData){
-        const user = await this.prism.user.findFirst({
-            where: {
-              OR: [
-                { email: req.email },
-                { userName: req.userName},
-              ],
-            },
-            select:{
-                id: true,
-                email: true,
-                userName: true,
-                hash: true,
-                update: true,
+        try{
+            const user = await this.prism.user.findFirst({
+                where: {
+                OR: [
+                    { email: req.email },
+                    { userName: req.userName},
+                ],
+                },
+                select:{
+                    id: true,
+                    email: true,
+                    userName: true,
+                    hash: true,
+                    update: true,
+                }
+            });
+            if (user && await argon.verify(user.hash, req.password))
+            {
+                console.log(req.email , "     ", req.userName)
+                delete user.hash;
+                return {'user': user};
             }
-        });
-        if (user && await argon.verify(user.hash, req.password))
-        {
-            console.log(req.email , "     ", req.userName)
-            delete user.hash;
-            return {'user': user};
+            else
+                return {'error' : 'password icorrect !!'};
         }
-        else
-            return {'error' : 'password icorrect !!'};
+        catch (error){
+            return {'error': error};
+        }
     }
 }

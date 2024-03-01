@@ -20,7 +20,7 @@ export class authController{
 
     @Post('signin')
     async loginn(@Body() req: LoginData, @Res() response: Response){
-        console.log(req);
+        // console.log(req);
         const user = await this.authS.signin(req);
         if (user.error)
             response.status(400).json(user);
@@ -95,9 +95,9 @@ export class authController{
     async uploadFile(@UploadedFile() file: Express.Multer.File, @Body('image') image: string, @Body('userName') userName: string,@Req() req: Request, @Body('Password') password: string , @Res() res: Response){
        
         // console.log(file);
-        console.log(file);
-        console.log(userName);
-        console.log(password);
+        // console.log(file);
+        // console.log(userName);
+        // console.log(password);
         
         
         // if (file)
