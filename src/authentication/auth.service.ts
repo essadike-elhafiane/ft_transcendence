@@ -252,8 +252,8 @@ export class authService {
     }
   }
 
-  async ValidateToken(id: number, bool: boolean, twoFa: boolean) {
-    if(twoFa !== undefined)
+  async ValidateToken(id: number, bool: boolean, twoFaC: boolean) {
+    if(twoFaC !== undefined)
     {
       await this.prism.user.update({
         where: {
@@ -262,7 +262,7 @@ export class authService {
         data: {
           token: bool,
           online: bool,
-          twofaCheck: twoFa
+          twoFaCheck: twoFaC
         },
       });
     }
