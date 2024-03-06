@@ -34,7 +34,6 @@ export class authService {
         );
       }
     }
-
     return uniqueUsername;
   }
 
@@ -136,7 +135,7 @@ export class authService {
     }
   }
 
-  async validateTwofactor(token: string, id: number) {
+  async verifyTwofactor(id: number,token: string ) {
     try {
       const user = await this.prism.user.findUnique({
         where: {
@@ -227,7 +226,7 @@ export class authService {
         },
       });
       if (user) {
-        this.ValidateToken(id, true);
+        this.ValidateToken(id, true, false);
       }
       return user || null;
     } catch (error) {
@@ -243,7 +242,7 @@ export class authService {
         },
       });
       if (user) {
-        this.ValidateToken(id, true);
+        await this.ValidateToken(id, true, undefined);
         delete user.hash;
       }
       if (user && !user.token) return null;
@@ -253,16 +252,31 @@ export class authService {
     }
   }
 
-  async ValidateToken(id: number, bool: boolean) {
-    await this.prism.user.update({
-      where: {
-        id,
-      },
-      data: {
-        token: bool,
-        online: bool,
-      },
-    });
+  async ValidateToken(id: number, bool: boolean, twoFa: boolean) {
+    if(twoFa !== undefined)
+    {
+      await this.prism.user.update({
+        where: {
+          id,
+        },
+        data: {
+          token: bool,
+          online: bool,
+          twofaCheck: twoFa,
+        },
+      });
+    }
+    else{
+      await this.prism.user.update({
+        where: {
+          id,
+        },
+        data: {
+          token: bool,
+          online: bool,
+        },
+      });
+    }
   }
 
   async ValideteUser(email: string, userName: string, image: string) {
@@ -279,7 +293,7 @@ export class authService {
         },
       });
       if (user) {
-        this.ValidateToken(user.id, true);
+        this.ValidateToken(user.id, true, false);
         return user;
       } else {
         try {
@@ -293,7 +307,7 @@ export class authService {
               firstName: "hhhhh",
               image: image,
               token: true,
-              // online: true,
+              online: true,
             },
             select: {
               id: true,
@@ -329,6 +343,7 @@ export class authService {
       if (user && (await argon.verify(user.hash, req.password))) {
         console.log(req.email, "     ", req.userName);
         delete user.hash;
+        await this.ValidateToken(user.id, true, false);
         return { user: user };
       } else return { error: "password icorrect !!" };
     } catch (error) {

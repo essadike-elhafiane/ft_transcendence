@@ -60,6 +60,20 @@ export class authController {
     res.json(valid);
   }
 
+  @Post("verify-2fa")
+  @UseGuards(JwtAuthGuard)
+  async verifyTwoFactorAuthenticationCode(
+    @Req() req: Request,
+    @Body("token") token: string,
+    @Res() res: Response
+  ) {
+    console.log(token);
+    const valid = await this.authS.verifyTwofactor(req.user["userId"], token);
+    if(valid)
+      await this.authS.ValidateToken(req.user["userId"], true, true);
+    res.json(valid);
+  }
+
   @Post("signin")
   async loginn(@Body() req: LoginData, @Res() response: Response) {
     // console.log(req);
@@ -99,43 +113,30 @@ export class authController {
         secure: true,
         sameSite: "none",
       })
-      .redirect(this.BackEndUrl + "/api/auth/callback");
+      .redirect(this.FrontEndUrl);
   }
 
-  @Get("api/auth/callback")
-  @UseGuards(JwtAuthGuard)
-  async	 callback(@Req() req: Request, @Res() response: Response) {
-			const user = await this.authS.findUserCallbak(req.user["userId"]);
-			if (user)
-			{
-				const token =  generateJwtToken(user);
-				response
-					.cookie("jwt", token, {
-						httpOnly: true,
-						secure: true,
-						sameSite: "none",
-					})
-					.redirect(this.FrontEndUrl);
-			}else
-			response.status(400).json({error: "user not found"}).redirect(this.FrontEndUrl+"/login");
-    }  
 
   @Get("api/auth/intra")
   @UseGuards(AuthGuard("intra"))
   intraLogin(@Req() request: Request, @Res() response: Response) {
+    try {
     response
       .cookie("jwt", request.user, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
       })
-      .redirect(this.BackEndUrl + "/api/auth/callback");
+      .redirect(this.FrontEndUrl);
+    } catch (error) {
+      response.status(400).json({error: error});
+    }
   }
 
   @Get("profile")
   @UseGuards(JwtAuthGuard)
   async user(@Req() request: Request, @Res() res: Response) {
-    console.log(request.user);
+    // console.log(request.user);
     const user = await this.authS.findUser(request.user["userId"]);
     console.log(request.user["userId"]);
     user
@@ -148,8 +149,7 @@ export class authController {
   @Get("logout")
   @UseGuards(JwtAuthGuard)
   async home(@Req() request: Request, @Res() res: Response) {
-    // console.log(request.user['email']);
-    await this.authS.ValidateToken(request.user["userId"], false);
+    await this.authS.ValidateToken(request.user["userId"], false, false);
     res
       .clearCookie("jwt", {
         httpOnly: true,
