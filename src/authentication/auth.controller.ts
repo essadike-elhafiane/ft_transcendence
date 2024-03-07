@@ -69,8 +69,6 @@ export class authController {
   ) {
     console.log(token);
     const valid = await this.authS.verifyTwofactor(req.user["userId"], token);
-    if(valid)
-      await this.authS.ValidateToken(req.user["userId"], true, true);
     res.json(valid);
   }
 
@@ -149,7 +147,7 @@ export class authController {
   @Get("logout")
   @UseGuards(JwtAuthGuard)
   async home(@Req() request: Request, @Res() res: Response) {
-    await this.authS.ValidateToken(request.user["userId"], false, false);
+    await this.authS.ValidateToken(request.user["userId"], false);
     res
       .clearCookie("jwt", {
         httpOnly: true,
