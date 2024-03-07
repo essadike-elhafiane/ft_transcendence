@@ -253,7 +253,7 @@ export class authService {
   }
 
   async ValidateToken(id: number, bool: boolean, twoFaC: boolean) {
-    
+    if (twoFaC !== undefined) {
       await this.prism.user.update({
         where: {
           id,
@@ -261,21 +261,21 @@ export class authService {
         data: {
           token: bool,
           online: bool,
-          // twoFaCheck: false,
+          twoFaCheck: twoFaC? false : true,
         },
       });
-    // }
-    // else{
-    //   await this.prism.user.update({
-    //     where: {
-    //       id,
-    //     },
-    //     data: {
-    //       token: bool,
-    //       online: bool,
-    //     },
-    //   });
-    // }
+    }
+    else{
+      await this.prism.user.update({
+        where: {
+          id,
+        },
+        data: {
+          token: bool,
+          online: bool,
+        },
+      });
+    }
   }
 
   async ValideteUser(email: string, userName: string, image: string) {
