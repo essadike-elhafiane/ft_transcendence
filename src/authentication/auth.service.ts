@@ -146,15 +146,15 @@ export class authService {
         },
       });
       if (!user || !user.secret) return false;
-      // const userd = await this.prism.user.update({
-      //   where: {
-      //     id,
-      //   },
-      //   data: {
-      //     twoFaCheck: true,
-      //   },
-      // });
-      // if (!userd) return false;
+      const userd = await this.prism.user.update({
+        where: {
+          id,
+        },
+        data: {
+          twoFaCheck: true,
+        },
+      });
+      if (!userd) return false;
       
       const valid = await this.Twofa.isTwoFactorAuthenticationCodeValid(
         user.secret,
