@@ -151,7 +151,7 @@ export class authService {
           id,
         },
         data: {
-          twoFaCheck: true,
+          Check2fa: true,
         },
       });
       if (!userd) return false;
@@ -270,7 +270,7 @@ export class authService {
         data: {
           token: bool,
           online: bool,
-          twoFaCheck: false,
+          Check2fa: false,
         },
       });
   }
