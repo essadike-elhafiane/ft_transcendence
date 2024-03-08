@@ -10,7 +10,7 @@ CREATE TABLE "Users" (
     "firstName" TEXT,
     "secret" TEXT,
     "twoFa" BOOLEAN NOT NULL DEFAULT false,
-    "twoFaCheck" BOOLEAN NOT NULL DEFAULT false,
+    "twofaCheck" BOOLEAN NOT NULL DEFAULT false,
     "lastName" TEXT,
     "token" BOOLEAN NOT NULL DEFAULT false,
     "online" BOOLEAN NOT NULL DEFAULT false,

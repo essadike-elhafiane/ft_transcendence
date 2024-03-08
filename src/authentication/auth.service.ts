@@ -89,6 +89,7 @@ export class authService {
         },
         data: {
           twoFa: true,
+          twofaCheck: true,
         },
       });
       if (user) return { message: "2fa enabled", status: true };
@@ -146,16 +147,6 @@ export class authService {
         },
       });
       if (!user || !user.secret) return false;
-      const userd = await this.prism.user.update({
-        where: {
-          id,
-        },
-        data: {
-          Check2fa: true,
-        },
-      });
-      if (!userd) return false;
-      
       const valid = await this.Twofa.isTwoFactorAuthenticationCodeValid(
         user.secret,
         token
@@ -236,7 +227,7 @@ export class authService {
         },
       });
       if (user) {
-        this.ValidateToken(id, true);
+        this.ValidateToken(id, true, false);
       }
       return user || null;
     } catch (error) {
@@ -252,7 +243,7 @@ export class authService {
         },
       });
       if (user) {
-        await this.ValidateToken(id, true);
+        await this.ValidateToken(id, true, undefined);
         delete user.hash;
       }
       if (user && !user.token) return null;
@@ -262,7 +253,9 @@ export class authService {
     }
   }
 
-  async ValidateToken(id: number, bool: boolean) {
+  async ValidateToken(id: number, bool: boolean, twoFa: boolean) {
+    if(twoFa !== undefined)
+    {
       await this.prism.user.update({
         where: {
           id,
@@ -270,11 +263,22 @@ export class authService {
         data: {
           token: bool,
           online: bool,
-          Check2fa: false,
+          twofaCheck: twoFa,
         },
       });
+    }
+    else{
+      await this.prism.user.update({
+        where: {
+          id,
+        },
+        data: {
+          token: bool,
+          online: bool,
+        },
+      });
+    }
   }
-  
 
   async ValideteUser(email: string, userName: string, image: string) {
     try {
@@ -290,7 +294,7 @@ export class authService {
         },
       });
       if (user) {
-        this.ValidateToken(user.id, true);
+        this.ValidateToken(user.id, true, false);
         return user;
       } else {
         try {
@@ -340,7 +344,7 @@ export class authService {
       if (user && (await argon.verify(user.hash, req.password))) {
         console.log(req.email, "     ", req.userName);
         delete user.hash;
-        await this.ValidateToken(user.id, true);
+        await this.ValidateToken(user.id, true, false);
         return { user: user };
       } else return { error: "password icorrect !!" };
     } catch (error) {

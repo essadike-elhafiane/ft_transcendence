@@ -21,7 +21,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 @Controller()
 export class authController {
   private readonly FrontEndUrl = process.env.FRONTEND_URL;
-	private readonly BackEndUrl = process.env.BACKEND_URL;
+  private readonly BackEndUrl = process.env.BACKEND_URL;
 
   constructor(private authS: authService) {}
 
@@ -32,7 +32,10 @@ export class authController {
     @Res() res: Response
   ) {
     console.log(req.user);
-    const src = await this.authS.generateTwoFactorAuthentication(req.user["userName"]);
+    const src = await this.authS.generateTwoFactorAuthentication(
+      req.user["userName"]
+    );
+    console.log(src);
     res.json(src);
   }
 
@@ -69,6 +72,7 @@ export class authController {
   ) {
     console.log(token);
     const valid = await this.authS.verifyTwofactor(req.user["userId"], token);
+    if (valid) await this.authS.ValidateToken(req.user["userId"], true, true);
     res.json(valid);
   }
 
@@ -114,20 +118,19 @@ export class authController {
       .redirect(this.FrontEndUrl);
   }
 
-
   @Get("api/auth/intra")
   @UseGuards(AuthGuard("intra"))
   intraLogin(@Req() request: Request, @Res() response: Response) {
     try {
-    response
-      .cookie("jwt", request.user, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .redirect(this.FrontEndUrl);
+      response
+        .cookie("jwt", request.user, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        })
+        .redirect(this.FrontEndUrl);
     } catch (error) {
-      response.status(400).json({error: error});
+      response.status(400).json({ error: error });
     }
   }
 
@@ -147,7 +150,7 @@ export class authController {
   @Get("logout")
   @UseGuards(JwtAuthGuard)
   async home(@Req() request: Request, @Res() res: Response) {
-    await this.authS.ValidateToken(request.user["userId"], false);
+    await this.authS.ValidateToken(request.user["userId"], false, false);
     res
       .clearCookie("jwt", {
         httpOnly: true,
@@ -168,29 +171,32 @@ export class authController {
     @Body("Password") password: string,
     @Res() res: Response
   ) {
-    // console.log(file);
-    // console.log(file);
-    // console.log(userName);
-    // console.log(password);
-
-    // if (file)
     try {
       const fileBase64 = file.buffer.toString("base64");
-
-      // // You might want to prepend the data URL scheme that indicates the content type, for example:
       const base64DataURI: string = `data:${file.mimetype};base64,${fileBase64}`;
-
-      // // console.log(base64DataURI);
       const user = await this.authS.Changedata(
         req.user["userId"],
         base64DataURI,
         userName,
         password
       );
-
       console.log(user);
       if (user.error) res.status(400).json(user.error);
-      else res.send("ok");
+      else {
+        const data = {
+          id: user.user.id,
+          email: user.user.email,
+          userName: user.user.userName,
+          update: user.user.update,
+        };
+        res
+          .cookie("jwt", generateJwtToken(data), {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+          })
+          .send("ok");
+      }
     } catch (error) {
       if (!image) res.status(400).json({ error: "image is required" });
       const user = await this.authS.Changedata(
@@ -200,7 +206,21 @@ export class authController {
         password
       );
       if (user.error) res.status(400).json(user.error);
-      else res.send("ok");
+      else {
+        const data = {
+          id: user.user.id,
+          email: user.user.email,
+          userName: user.user.userName,
+          update: user.user.update,
+        };
+        res
+          .cookie("jwt", generateJwtToken(data), {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+          })
+          .send("ok");
+      }
     }
   }
 }
