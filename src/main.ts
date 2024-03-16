@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
-import { Request, Response, NextFunction } from 'express';
+
 
 async function server() {
   const app = await NestFactory.create(AppModule);
@@ -15,7 +15,7 @@ async function server() {
   app.enableCors({
     origin: process.env.FRONTEND_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: ['Content-Type, Accept', 'Authorization'],
+    allowedHeaders: ['Access-Control-Allow-Headers', 'Origin','X-Requested-With','Content-Type', 'Accept', 'Authorization'],
     credentials: true,
   });
 
