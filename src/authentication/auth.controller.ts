@@ -35,11 +35,11 @@ export class authController {
     @Req() req: Request,
     @Res() res: Response
   ) {
-    console.log(req.user);
+    //console.log(req.user);
     const src = await this.authS.generateTwoFactorAuthentication(
       req.user["userName"]
     );
-    console.log(src);
+    //console.log(src);
     res.json(src);
   }
 
@@ -50,7 +50,7 @@ export class authController {
     @Body("token") token: string,
     @Res() res: Response
   ) {
-    console.log(token);
+    //console.log(token);
     const valid = await this.authS.disableTwofactor(req.user["userId"], token);
     res.json(valid);
   }
@@ -62,7 +62,7 @@ export class authController {
     @Body("token") token: string,
     @Res() res: Response
   ) {
-    console.log(token);
+    //console.log(token);
     const valid = await this.authS.enableTwofactor(req.user["userId"], token);
     res.json(valid);
   }
@@ -96,7 +96,7 @@ export class authController {
   @Post("signup")
   async signup(@Body() req: signupData, @Res() response: Response) {
     const user = await this.authS.signup(req);
-    console.log("user", req, user);
+    //console.log("user", req, user);
     if (user.error) response.status(400).json(user.error);
     else
       response
@@ -141,7 +141,7 @@ export class authController {
   async user(@Req() request: Request, @Res() res: Response) {
     // console.log(request.user);
     const user = await this.authS.findUser(request.user["userId"]);
-    console.log(request.user["userId"]);
+    //console.log(request.user["userId"]);
     user
       ? res.json(user)
       : res.status(404).json({
@@ -174,9 +174,9 @@ export class authController {
     @Res() res: Response
   ) {
     try {
-      console.log(file);
+      //console.log(file);
       const ImgUrl = await this.cloudinaryService.uploadImage(file);
-      console.log('Imgae----------:  ', ImgUrl);
+      //console.log('Imgae----------:  ', ImgUrl);
       // const fileBase64 = file.buffer.toString("base64");
       // const base64DataURI: string = `data:${file.mimetype};base64,${fileBase64}`;
       const base64DataURI: string = ImgUrl;
@@ -186,7 +186,7 @@ export class authController {
         userName,
         password
       );
-      console.log(user);
+      //console.log(user);
       if (user.error) res.status(400).json(user.error);
       else {
         const data = {

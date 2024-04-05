@@ -136,13 +136,13 @@ export class serverGateway
     );
 
     if (!isExist) {
-      console.log("Conversation does not Exist !");
+      //console.log("Conversation does not Exist !");
       // If dosn't exist create new record
       const newConv = await this._prisma.createConversation(payload);
       // ADD conversation ID for USER1 and USER2
       this._users.addNewConversation(payload, newConv.id);
     } else {
-      console.log("Conversation Exists !");
+      //console.log("Conversation Exists !");
       // If Exist Just add the message at the conversation ID
       await this._prisma.updateConversation(isExist.id, payload);
     }
@@ -175,7 +175,7 @@ export class serverGateway
             .emit("create", `${payload.name} created succefully !`);
       // Add the room to the user's room array of Objects
       this._users.addNewRoom(payload.ownerId, newRoom, "OWNER");
-      console.log(this._users.getUserById(payload.ownerId));
+      //console.log(this._users.getUserById(payload.ownerId));
 
       // Check Execption
     } catch (e) {
@@ -183,7 +183,7 @@ export class serverGateway
       // FIXME: I don't have to send errors to all client
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Means that the room already exist with that name
-        console.log('Errrrooooor !');
+        //console.log('Errrrooooor !');
         if (e.code === "P2002")
           this._server
             .to(client.id)
@@ -216,7 +216,7 @@ export class serverGateway
         this._users.addNewRoom(payload.userId, foundedRoom);
         // Join the virtual room at the server
         client.join(foundedRoom.name);
-        console.log(this._users.getUserById(payload.userId));
+        //console.log(this._users.getUserById(payload.userId));
       } else {
         // If doesn't exist just inform the user
         this._server
@@ -271,7 +271,7 @@ export class serverGateway
 		  this._server.to(socktId).emit("NewInvit", newInvit);
       notifications && this._server.to(socktId).emit("Notification", notifications);
 		});
-		console.log(" newInvet from :", targetFriend.sender);
+		//console.log(" newInvet from :", targetFriend.sender);
 	  }
 	}
   }
@@ -282,7 +282,7 @@ export class serverGateway
       Payload.userId,
       Payload.id
     );
-    console.log("deny : ", targetFriend, Payload.id, Payload.userId);
+    //console.log("deny : ", targetFriend, Payload.id, Payload.userId);
     if (targetFriend !== null) {
       const SocketsTarget = this._users.getUserById(Payload.userId);
       if (SocketsTarget) {
@@ -300,7 +300,7 @@ export class serverGateway
       Payload.id,
       Payload.userId,
     );
-    console.log("deny : ", targetFriend, Payload.id, Payload.userId);
+    //console.log("deny : ", targetFriend, Payload.id, Payload.userId);
     if (targetFriend !== null) {
       const SocketsTarget = this._users.getUserById(Payload.id);
       if (SocketsTarget) {
@@ -345,7 +345,7 @@ export class serverGateway
 	  Payload.userId,
 	  Payload.id
 	);
-  console.log("blocked", targetFriend);
+  //console.log("blocked", targetFriend);
 	if (!targetFriend) return
 	  const SocketsTarget = this._users.getUserById(Payload.id);
 	  if (SocketsTarget) {
@@ -374,7 +374,7 @@ export class serverGateway
 	  //     this._server.to(socktId).emit("UnBlocked", Payload.userId);
 	  //   });
 	  // }
-	  console.log("unblocked", targetFriend);
+	  //console.log("unblocked", targetFriend);
 	  
 	  const client = this._users.getUserById(Payload.userId);
 	  if (client) {
@@ -394,7 +394,7 @@ export class serverGateway
     roomSockets.forEach(socket => {
       socket.leave(roomId);
     });
-    console.log(`Room ${roomId} deleted.`);
+    //console.log(`Room ${roomId} deleted.`);
   }
 
 
@@ -407,41 +407,41 @@ export class serverGateway
 					const base = await this._prisma.userInfogame(lodingdata.userid);
 					user = {clientid: lodingdata.userid, image: base.image, username: base.userName , ingame: false}
 				} catch (error) {
-					console.error("Error fetching user info:", error);
+					//console.error("Error fetching user info:", error);
 				}
 				let curentroom = this.gameRooms.searcheClientRoom(lodingdata.userid) ;
-				console.log(1);
+				//console.log(1);
 				if ( !curentroom )
 				{
 					curentroom = this.gameRooms.findEmptyRoom(lodingdata.type , lodingdata.userid , lodingdata.mode);
 					try{
 					if (!curentroom)
 					{
-						console.log(2);
+						//console.log(2);
 						this.gameRooms.addRoom(user , lodingdata.type , lodingdata.mode ,lodingdata.friendid);	
             curentroom =  this.gameRooms.searcheClientRoom(lodingdata.userid)
 					}
 					else
 					{
-						console.log(3);
+						//console.log(3);
 						this.gameRooms.addUser(curentroom, user);
 					}
 					}
 					catch (error) {
-						console.error("Error fetching user info:", error);
+						//console.error("Error fetching user info:", error);
 					}
 				}
 				// join game
 				else  if ( curentroom && (this.gameRooms.checkRoomsize(curentroom) === 2 ))
 				{ 
-					console.log(4);
+					//console.log(4);
 					client.join(curentroom);
 					this._server.to(curentroom).emit('RandomGameroom',{ room: this.gameRooms.rooms[curentroom] , alreadymatch: true});
 					return ;
 				}
 				// join game
 				client.join(curentroom);
-        console.log("curentroom", curentroom);
+        //console.log("curentroom", curentroom);
 				if ( curentroom && (this.gameRooms.checkRoomsize(curentroom) === 2 ))
 				{
 					console.log(5);
@@ -520,7 +520,7 @@ export class serverGateway
 					const base = await this._prisma.userInfogame(mydata.clientID );
 					user = {clientid: mydata.clientID , image: base.image, username: base.userName , ingame: false}
 				} catch (error) {
-					console.error("Error fetching user info:", error);
+					//console.error("Error fetching user info:", error);
 				}
       var room = this.gameRooms.searcheClientRoom(mydata.invitationSenderID);
       const SocketsTarget = this._users.getUserById(mydata.invitationSenderID);
@@ -575,7 +575,7 @@ export class serverGateway
 					const base = await this._prisma.userInfogame(mydata.invitationSenderID);
 					user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false}
 				} catch (error) {
-					console.error("Error fetching user info:", error);
+					//console.error("Error fetching user info:", error);
           return;
 				}
       if (SocketsTarget) 
