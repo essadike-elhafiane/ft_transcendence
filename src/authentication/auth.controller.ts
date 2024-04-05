@@ -17,13 +17,17 @@ import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
 import { generateJwtToken } from "./jwtStrategy/jwtToken";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { cloudinaryService } from "./cloudinary.service";
 
+
+
+// check in bakend if the user already has 2fa enabled
 @Controller()
 export class authController {
   private readonly FrontEndUrl = process.env.FRONTEND_URL;
   private readonly BackEndUrl = process.env.BACKEND_URL;
 
-  constructor(private authS: authService) {}
+  constructor(private authS: authService, private cloudinaryService: cloudinaryService) {}
 
   @Get("generate-2fa")
   @UseGuards(JwtAuthGuard)
@@ -82,13 +86,11 @@ export class authController {
     const user = await this.authS.signin(req);
     if (user.error) response.status(400).json(user);
     else
-      response
-        .cookie("jwt", generateJwtToken(user.user), {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-        })
-        .send({ login: "login success !" });
+    response.cookie("jwt", generateJwtToken(user.user), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Use 'none' in production with 'secure: true'
+    }).send({ login: "login success !" });
   }
 
   @Post("signup")
@@ -172,8 +174,12 @@ export class authController {
     @Res() res: Response
   ) {
     try {
-      const fileBase64 = file.buffer.toString("base64");
-      const base64DataURI: string = `data:${file.mimetype};base64,${fileBase64}`;
+      console.log(file);
+      const ImgUrl = await this.cloudinaryService.uploadImage(file);
+      console.log('Imgae----------:  ', ImgUrl);
+      // const fileBase64 = file.buffer.toString("base64");
+      // const base64DataURI: string = `data:${file.mimetype};base64,${fileBase64}`;
+      const base64DataURI: string = ImgUrl;
       const user = await this.authS.Changedata(
         req.user["userId"],
         base64DataURI,
