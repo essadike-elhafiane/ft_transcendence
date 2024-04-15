@@ -19,7 +19,7 @@ export class UserController {
   @Post("sendinvit")
   @UseGuards(JwtAuthGuard)
   async RequestFriend(@Query() id: string, @Req() req: Request) {
-    //console.log(id["id"]);
+    console.log(id["id"]);
     const user = await this.FriendsService.sendFriendRequest(
       req.user["userId"],
       parseInt(id["id"])

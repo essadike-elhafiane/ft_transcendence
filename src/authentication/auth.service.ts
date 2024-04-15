@@ -183,11 +183,11 @@ export class authService {
   }
 
   async signup(req: signupData) {
-    //console.log(req);
+    console.log(req);
     try {
       const hash = await argon.hash("req.password");
       const username = await this.generateUniqueUsername(req.firstName);
-      //console.log(username);
+      console.log(username);
       const data = await this.prism.user.create({
         data: {
           email: req.email,
@@ -325,6 +325,22 @@ export class authService {
     }
   }
 
+  async updateImage(id: number, image: string) {
+    try {
+      const user = await this.prism.user.update({
+        where: {
+          id,
+        },
+        data: {
+          image: image,
+        },
+      });
+      return user;
+    } catch (error) {
+      return { error: error };
+    }
+  }
+
   async signin(req: LoginData) {
     try {
       const user = await this.prism.user.findFirst({
@@ -340,7 +356,7 @@ export class authService {
         },
       });
       if (user && (await argon.verify(user.hash, req.password))) {
-        //console.log(req.email, "     ", req.userName);
+        console.log(req.email, "     ", req.userName);
         delete user.hash;
         await this.ValidateToken(user.id, true, false);
         return { user: user };

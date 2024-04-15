@@ -350,7 +350,7 @@ export class GatewayService {
       });
     }
 
-    //console.log(sortedData);
+    console.log(sortedData);
 
     // return lastMessajes;
     return sortedData;
@@ -389,7 +389,7 @@ export class GatewayService {
           },
         },
       });
-      //console.log(user);
+      console.log(user);
     }
   }
 
